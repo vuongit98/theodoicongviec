@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "736750778406",
+    "firebase_url": "https://appcongvieckio-default-rtdb.firebaseio.com",
+    "project_id": "appcongvieckio",
+    "storage_bucket": "appcongvieckio.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:736750778406:android:20f6541cfac6939aab8ee7",
+        "android_client_info": {
+          "package_name": "com.nguyenquocthai.nguyenquocthai"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8iGKeVb-Ubwz6OrfwmsAKyiwsCYqGoUY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:736750778406:android:d15ed34deabcdb70ab8ee7",
+        "android_client_info": {
+          "package_name": "com.theodoilamviec.theodoilamviec"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8iGKeVb-Ubwz6OrfwmsAKyiwsCYqGoUY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

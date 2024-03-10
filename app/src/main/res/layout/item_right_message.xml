@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:layout_height="wrap_content">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_weight="0.3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"/>
+    <androidx.appcompat.widget.AppCompatTextView
+        android:background="@color/color_alert"
+        android:textColor="#ffffff"
+        android:id="@+id/tv_messgage"
+        android:textAlignment="textEnd"
+        android:layout_weight="0.7"
+        android:padding="5dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"/>
+</LinearLayout>

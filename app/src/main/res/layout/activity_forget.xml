@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        style="@style/ThemeOverlay.AppCompat.Dark"
+        android:id="@+id/toolbar"
+        android:background="@color/color_main"
+        android:layout_marginBottom="150dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+      <com.google.android.material.textfield.TextInputLayout
+          android:layout_width="match_parent"
+
+          android:layout_margin="15dp"
+          android:layout_height="wrap_content">
+          <EditText
+              android:drawableRight="@drawable/ic_baseline_email_24"
+              android:paddingLeft="5dp"
+              android:hint="Nhập Email"
+              android:minHeight="60dp"
+              android:id="@+id/editEmail"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"/>
+      </com.google.android.material.textfield.TextInputLayout>
+    <Button
+
+        android:textStyle="bold"
+        android:elevation="5dp"
+        android:textColor="@android:color/background_light"
+        android:id="@+id/btnxacnhan"
+        android:text="Xác Nhận"
+        android:background="@drawable/custom_bg_button"
+        android:minWidth="150dp"
+        android:layout_margin="10dp"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+
+
+</LinearLayout>

@@ -1,0 +1,227 @@
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/activity_edit_category.xml" value="0.11980749746707194" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/activity_filtered_notes.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/activity_forget.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/activity_home.xml" value="0.14492753623188406" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/activity_main.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/activity_menu.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/activity_notification_preview.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/activity_notifications.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/activity_search.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/activity_settings.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/activity_sign_in.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/activity_sign_up.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/activity_them_chu_thich.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/activity_trash.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/activity_view_attached_image.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/add_category_bottom_sheet_modal.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/archive_note_actions_bottom_sheet_modal.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/archived_note_view_bottom_sheet_modal.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/attach_image_bottom_sheet_modal.xml" value="0.22826086956521738" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/categories_bottom_sheet_modal.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/edit_category_bottom_sheet_modal.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/fragment_archive.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/fragment_home.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/fragment_notes.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/fragment_reminders.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/fragment_trash.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/home_more_options_bottom_sheet_modal.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/item_category.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/item_category_filter.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/item_choose_category.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/item_note.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/item_note_type_list.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/item_notification.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/more_actions_bottom_sheet_modal.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/note_actions.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/note_actions_bottom_sheet_modal.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/password_bottom_sheet_modal.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/pin_code_dialog.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/pin_options_bottom_sheet_modal.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/placeholder_note_empty.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/popup_confirm.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/popup_reminder.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/popup_sort_by.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/preview_notification_dialog.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/reader_mode_dialog.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/reminder_bottom_sheet_modal.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/toolbar_selector.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/AppGhiChu/AppGhiChu/app/src/main/res/layout/trash_note_actions_bottom_sheet_modal.xml" value="0.24635416666666668" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/activity_changepass.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/activity_create_pin.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/activity_edit_category.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/activity_filtered_notes.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/activity_forget.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/activity_home.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/activity_them_chu_thich.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/activity_trash.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/add_category_bottom_sheet_modal.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/archive_note_actions_bottom_sheet_modal.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/archived_note_view_bottom_sheet_modal.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/categories_bottom_sheet_modal.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/edit_category_bottom_sheet_modal.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/fragment_archive.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/fragment_home.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/fragment_notes.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/fragment_reminders.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/fragment_trash.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/home_more_options_bottom_sheet_modal.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/item_category.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/item_category_filter.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/item_choose_category.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/item_note.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/item_note_type_list.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/item_notification.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/more_actions_bottom_sheet_modal.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/note_actions.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/note_actions_bottom_sheet_modal.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/password_bottom_sheet_modal.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/pin_code_dialog.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/pin_options_bottom_sheet_modal.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/placeholder_note_empty.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/popup_confirm.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/popup_reminder.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/popup_sort_by.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/preview_notification_dialog.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/reader_mode_dialog.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/reminder_bottom_sheet_modal.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/toolbar_selector.xml" value="0.25" />
+        <entry key="..\:/Users/HP/Downloads/NganLe/NganLe/app/src/main/res/layout/trash_note_actions_bottom_sheet_modal.xml" value="0.25" />
+        <entry key="app/src/main/res/drawable-v24/custom_bg_button.xml" value="0.3135" />
+        <entry key="app/src/main/res/drawable/button_lg.xml" value="0.35260416666666666" />
+        <entry key="app/src/main/res/drawable/button_mini.xml" value="0.35260416666666666" />
+        <entry key="app/src/main/res/drawable/button_mini_alternative.xml" value="0.277" />
+        <entry key="app/src/main/res/drawable/button_mini_dark.xml" value="0.35260416666666666" />
+        <entry key="app/src/main/res/drawable/button_round.xml" value="0.2755" />
+        <entry key="app/src/main/res/drawable/divider_inline_dark.xml" value="0.2755" />
+        <entry key="app/src/main/res/drawable/divider_inline_light.xml" value="0.2755" />
+        <entry key="app/src/main/res/drawable/ic_baseline_access_time_24.xml" value="0.2755" />
+        <entry key="app/src/main/res/drawable/ic_baseline_add_circle_outline_24.xml" value="0.2755" />
+        <entry key="app/src/main/res/drawable/ic_baseline_arrow_back_ios_24.xml" value="0.2755" />
+        <entry key="app/src/main/res/drawable/ic_baseline_arrow_back_ios_new_24.xml" value="0.2755" />
+        <entry key="app/src/main/res/drawable/ic_baseline_arrow_forward_ios_24.xml" value="0.2755" />
+        <entry key="app/src/main/res/drawable/ic_baseline_attach_money_24.xml" value="0.2755" />
+        <entry key="app/src/main/res/drawable/ic_baseline_bedtime_24.xml" value="0.2755" />
+        <entry key="app/src/main/res/drawable/ic_baseline_email_24.xml" value="0.2755" />
+        <entry key="app/src/main/res/drawable/navigation_view_item_background.xml" value="0.35260416666666666" />
+        <entry key="app/src/main/res/drawable/note_background.xml" value="0.33425925925925926" />
+        <entry key="app/src/main/res/drawable/read_mark.xml" value="0.277" />
+        <entry key="app/src/main/res/drawable/reminder_background.xml" value="0.277" />
+        <entry key="app/src/main/res/drawable/round_background.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/rounded_modal_shape.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/theme_chooser_theme_eight_rectangle.xml" value="0.3223958333333333" />
+        <entry key="app/src/main/res/drawable/theme_chooser_theme_five_rectangle.xml" value="0.3223958333333333" />
+        <entry key="app/src/main/res/drawable/theme_chooser_theme_four_rectangle.xml" value="0.3223958333333333" />
+        <entry key="app/src/main/res/drawable/theme_chooser_theme_nine_rectangle.xml" value="0.3223958333333333" />
+        <entry key="app/src/main/res/drawable/time_picker_background.xml" value="0.35260416666666666" />
+        <entry key="app/src/main/res/drawable/todo_background.xml" value="0.3223958333333333" />
+        <entry key="app/src/main/res/layout/activity_about.xml" value="0.2776268115942029" />
+        <entry key="app/src/main/res/layout/activity_add_note.xml" value="0.2776268115942029" />
+        <entry key="app/src/main/res/layout/activity_changepass.xml" value="0.2864583333333333" />
+        <entry key="app/src/main/res/layout/activity_create_pin.xml" value="0.2776268115942029" />
+        <entry key="app/src/main/res/layout/activity_edit_category.xml" value="0.2776268115942029" />
+        <entry key="app/src/main/res/layout/activity_filtered_notes.xml" value="0.2776268115942029" />
+        <entry key="app/src/main/res/layout/activity_forget.xml" value="0.2463768115942029" />
+        <entry key="app/src/main/res/layout/activity_home.xml" value="0.25364583333333335" />
+        <entry key="app/src/main/res/layout/activity_in_app_purchase.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.2776268115942029" />
+        <entry key="app/src/main/res/layout/activity_menu.xml" value="0.25364583333333335" />
+        <entry key="app/src/main/res/layout/activity_notification_preview.xml" value="0.2776268115942029" />
+        <entry key="app/src/main/res/layout/activity_notifications.xml" value="0.2776268115942029" />
+        <entry key="app/src/main/res/layout/activity_search.xml" value="0.20052083333333334" />
+        <entry key="app/src/main/res/layout/activity_settings.xml" value="0.2776268115942029" />
+        <entry key="app/src/main/res/layout/activity_sign_in.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_splash.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/activity_todo_create_list.xml" value="0.20052083333333334" />
+        <entry key="app/src/main/res/layout/activity_todo_list.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/activity_trash.xml" value="0.1956521739130435" />
+        <entry key="app/src/main/res/layout/activity_unclock.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/activity_view_attached_image.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/activity_view_attached_video.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/activity_view_todo.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/activity_widget.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/add_category_bottom_sheet_modal.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/add_todo_bottom_sheet_modal.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/archive_note_actions_bottom_sheet_modal.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/archived_note_view_bottom_sheet_modal.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/attach_image_bottom_sheet_modal.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/categories_bottom_sheet_modal.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/custom_controller.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/default_app_widget.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/edit_category_bottom_sheet_modal.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/export_note_as_dialog.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/fragment_archive.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.2776268115942029" />
+        <entry key="app/src/main/res/layout/fragment_notes.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/fragment_reminders.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/fragment_todos.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/fragment_trash.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/google_admob_native_ad_bottom_sheet_modal.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/google_admob_native_ad_layout.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/home_more_options_bottom_sheet_modal.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/item_category.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/item_category_filter.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/item_choose_category.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/item_note.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/item_note_type_list.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/item_notification.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/item_row_inapp.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/item_row_sub.xml" value="0.18541666666666667" />
+        <entry key="app/src/main/res/layout/item_todo.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/item_todo_list.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/more_actions_bottom_sheet_modal.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/navigation_header.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/note_actions.xml" value="0.2776268115942029" />
+        <entry key="app/src/main/res/layout/note_actions_bottom_sheet_modal.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/password_bottom_sheet_modal.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/pin_options_bottom_sheet_modal.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/placeholder_note_empty.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/placeholder_todo_empty.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/popup_attach_link.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/popup_confirm.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/popup_reminder.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/popup_sort_by.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/preview_notification_dialog.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/reader_mode_dialog.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/reminder_bottom_sheet_modal.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/subscription_activity.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/todo_actions.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/todo_actions_bottom_sheet_modal.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/todo_lists_bottom_sheet_modal.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/todo_move_to_bottom_sheet_modal.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/layout/toolbar_selector.xml" value="0.2776268115942029" />
+        <entry key="app/src/main/res/layout/trash_note_actions_bottom_sheet_modal.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/menu/bottom_navigation.xml" value="0.33645833333333336" />
+        <entry key="app/src/main/res/menu/menu_sort.xml" value="0.2989583333333333" />
+        <entry key="app/src/main/res/menu/navigation_drawer.xml" value="0.3312820512820513" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="jbr-17" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ProjectJDKs.UI">
+        <settings>
+          <last-edited>1.8</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>

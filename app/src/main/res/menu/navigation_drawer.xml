@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <item android:id="@+id/homework"
+        android:icon="@drawable/home_icon"
+        android:title="Home Work"/>
+
+
+    <item android:id="@id/menu_trash"
+        android:icon="@drawable/trash_icon"
+        android:title="@string/trash"/>
+
+    <item android:id="@id/menu_notification"
+        android:icon="@drawable/icon_bell"
+        android:title="@string/notifications"/>
+
+
+    <item android:id="@+id/reminders"
+        android:icon="@drawable/ic_baseline_access_time_24"
+        android:title="Nhắc nhở"/>
+    <item android:id="@id/menu_settings"
+        android:icon="@drawable/gear_icon"
+        android:title="@string/settings"/>
+
+
+
+</menu>
