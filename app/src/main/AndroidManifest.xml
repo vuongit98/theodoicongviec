@@ -1,26 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
 
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32"
+        tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission
+        android:name="android.permission.READ_MEDIA_VIDEO"
+        tools:ignore="SelectedPhotoAccess" />
+    <uses-permission
+        android:name="android.permission.READ_MEDIA_IMAGES"
+        tools:ignore="SelectedPhotoAccess" />
 
     <application
+        android:name="com.theodoilamviec.MyApplication"
         android:icon="@drawable/logo"
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name="com.theodoilamviec.Account.AccessProjectActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.theodoilamviec.Account.StaticJobActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.theodoilamviec.Account.adapters.ProjectActivity"
+            android:exported="false" />
+        <activity
+            android:name=".InfoJobActivity"
+            android:exported="false" />
         <activity
             android:name="com.theodoilamviec.Account.activities.CreateJobPersonActivity"
             android:exported="false" />
@@ -81,7 +108,9 @@
         </provider>
 
         <receiver android:name=".models.ReminderReceiver" />
+        <receiver android:name="com.theodoilamviec.BroadcastReminder"/>
 
+        <service android:name="com.theodoilamviec.service.BackgroundNotificationService" />
         <service
             android:name="com.theodoilamviec.MyFirebaseMessagingService"
             android:exported="false">

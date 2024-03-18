@@ -36,7 +36,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="4dp"
-            android:hint="Note Subtitle"
+            android:hint="Sắp hết thời gian làm công việc!"
             android:textColor="@color/color_dark"
             android:textSize="13sp"
             tools:ignore="HardcodedText" />
@@ -82,7 +82,7 @@
             android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="4dp"
-            android:hint="Note Created At"
+            android:hint="End At"
             android:textColor="@color/color_dark"
             android:textSize="10sp"
             tools:ignore="HardcodedText,SmallSp" />

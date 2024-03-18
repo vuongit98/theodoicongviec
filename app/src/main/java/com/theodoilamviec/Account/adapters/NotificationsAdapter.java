@@ -1,46 +1,50 @@
 package com.theodoilamviec.Account.adapters;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.theodoilamviec.Account.JobNotificationLocal;
 import com.theodoilamviec.Account.listeners.NotificationListener;
-import com.theodoilamviec.theodoilamviec.R;
-import com.theodoilamviec.theodoilamviec.models.Notification;
+import com.theodoilamviec.theodoilamviec.databinding.ItemNotificationBinding;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdapter.NotificationViewHolder> {
 
-    private final List<Notification> notifications;
+    private final List<String> notificationsJobList = new ArrayList<>();
     private final NotificationListener notificationListener;
 
-    public NotificationsAdapter(List<Notification> notifications, NotificationListener notificationListener) {
-        this.notifications = notifications;
+    public NotificationsAdapter( NotificationListener notificationListener) {
         this.notificationListener = notificationListener;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    public void submitList(List<String> jobNotifications) {
+        notificationsJobList.clear();
+        notificationsJobList.addAll(jobNotifications);
+        notifyDataSetChanged();
+    }
     @NonNull
     @Override
     public NotificationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new NotificationViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_notification, parent, false));
+        return new NotificationViewHolder(ItemNotificationBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull NotificationViewHolder holder, int position) {
-        holder.set_notification(notifications.get(position));
-        holder.layout.setOnClickListener(v -> notificationListener.onNotificationClicked(notifications.get(position), position));
+        holder.set_notification(notificationsJobList.get(position), position, notificationListener);
+
     }
 
     @Override
     public int getItemCount() {
-        return notifications.size();
+        return notificationsJobList.size();
     }
 
     @Override
@@ -50,29 +54,16 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
 
     static class NotificationViewHolder extends RecyclerView.ViewHolder {
 
-        LinearLayout layout;
-
-        View isRead;
-        TextView title, description;
-
-        NotificationViewHolder(@NonNull View notification) {
-            super(notification);
-
-            layout = notification.findViewById(R.id.item_notification_layout);
-            isRead = notification.findViewById(R.id.notification_is_read);
-            title = notification.findViewById(R.id.notification_title);
-            description = notification.findViewById(R.id.notification_description);
+        ItemNotificationBinding binding ;
+        NotificationViewHolder(@NonNull ItemNotificationBinding notification) {
+            super(notification.getRoot());
+            binding = notification;
         }
 
-        void set_notification(Notification data) {
-            title.setText(data.title);
-            description.setText(data.content);
-            // check if is read
-            if (!data.read) {
-                isRead.setVisibility(View.VISIBLE);
-            } else {
-                isRead.setVisibility(View.GONE);
-            }
+        void set_notification(String data, int position, NotificationListener notificationListener) {
+            binding.notificationTitle.setText(data);
+            binding.itemNotificationLayout.setOnClickListener(v -> notificationListener
+                    .onNotificationClicked(data, position));
         }
 
     }

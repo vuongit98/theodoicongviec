@@ -1,9 +1,49 @@
 package com.theodoilamviec.Account;
 
-public class JobUser {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
+public class JobUser implements Parcelable {
     private String idJob ;
     private String idJobUser ;
     private User user ;
+    private String idProject ;
+
+    public JobUser(String idJob, String idJobUser, User user, String idProject) {
+        this.idJob = idJob;
+        this.idJobUser = idJobUser;
+        this.user = user;
+        this.idProject = idProject;
+    }
+
+    protected JobUser(Parcel in) {
+        idJob = in.readString();
+        idJobUser = in.readString();
+        user = in.readParcelable(User.class.getClassLoader());
+        idProject = in.readString();
+    }
+
+    public static final Creator<JobUser> CREATOR = new Creator<JobUser>() {
+        @Override
+        public JobUser createFromParcel(Parcel in) {
+            return new JobUser(in);
+        }
+
+        @Override
+        public JobUser[] newArray(int size) {
+            return new JobUser[size];
+        }
+    };
+
+    public String getIdProject() {
+        return idProject;
+    }
+
+    public void setIdProject(String idProject) {
+        this.idProject = idProject;
+    }
 
     public JobUser() {
     }
@@ -36,5 +76,18 @@ public class JobUser {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeString(idJob);
+        dest.writeString(idJobUser);
+        dest.writeParcelable(user, flags);
+        dest.writeString(idProject);
     }
 }

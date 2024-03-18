@@ -6,6 +6,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
+import com.theodoilamviec.Account.JobNotificationLocal;
 import com.theodoilamviec.theodoilamviec.models.Category;
 import com.theodoilamviec.theodoilamviec.models.Note;
 import com.theodoilamviec.theodoilamviec.models.Notification;
@@ -129,5 +130,10 @@ public interface DAO {
     @Query("DELETE FROM trash_notes")
     void request_delete_all_trash_note();
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertJobNotificationLocal(JobNotificationLocal jobNotification);
+
+    @Query("SELECT * FROM JobNotificationLocal ")
+    void requestAllJobNotificationLocal();
 
 }

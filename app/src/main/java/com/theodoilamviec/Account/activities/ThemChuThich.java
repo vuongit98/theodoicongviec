@@ -401,7 +401,7 @@ public class ThemChuThich extends AppCompatActivity implements MoreActionsBottom
             TextView reminderText = findViewById(R.id.reminder_set_text);
             reminderText.setText(reminderSet);
 
-            Toast.makeText(this, getString(R.string.reminder_set_successfully), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,   getString(R.string.reminder_set_successfully), Toast.LENGTH_SHORT).show();
 
             addReminderDialog.dismiss();
         });

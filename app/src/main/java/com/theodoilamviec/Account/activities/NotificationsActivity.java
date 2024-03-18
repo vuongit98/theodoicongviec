@@ -1,21 +1,20 @@
 package com.theodoilamviec.Account.activities;
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.theodoilamviec.Account.Job;
+import com.theodoilamviec.Account.JobNotificationLocal;
 import com.theodoilamviec.Account.listeners.NotificationListener;
 import com.theodoilamviec.theodoilamviec.R;
 import com.theodoilamviec.Account.adapters.NotificationsAdapter;
@@ -23,10 +22,10 @@ import com.theodoilamviec.theodoilamviec.DB.APP_DATABASE;
 import com.theodoilamviec.theodoilamviec.DB.DAO;
 import com.theodoilamviec.theodoilamviec.models.Notification;
 
-import com.theodoilamviec.theodoilamviec.utils.Helper;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class NotificationsActivity extends AppCompatActivity implements NotificationListener {
 
@@ -34,9 +33,13 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
     private NotificationsAdapter adapter;
     private List<Notification> notifications;
 
+    private final List<Job> jobsList = new ArrayList<>();
+    private final List<JobNotificationLocal> jobNotifications = new ArrayList<>();
+
+    private final List<String> listNotifications = new ArrayList<>();
     private DAO dao;
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "NotifyDataSetChanged"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,9 +58,8 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
         ImageView deleteAllNotifications = findViewById(R.id.delete_all_notifications);
         deleteAllNotifications.setOnClickListener(v -> {
             dao.requestDeleteAllNotification();
-            notifications.clear();
-            adapter.notifyDataSetChanged();
-            requestNotifications();
+            adapter.submitList(new ArrayList<>());
+            deleteAllNoti();
         });
 
         // notifications list initialize
@@ -66,10 +68,14 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
 
         // notifications list, adapter
         notifications = new ArrayList<>();
-        adapter = new NotificationsAdapter(notifications, this);
+        adapter = new NotificationsAdapter(this);
         recyclerView.setAdapter(adapter);
 
         requestNotifications();
+    }
+
+    private void deleteAllNoti() {
+        FirebaseDatabase.getInstance().getReference("Notifications").removeValue();
     }
 
     /**
@@ -77,72 +83,53 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
      * DAO, notifications entity
      */
     private void requestNotifications() {
-        @SuppressLint("StaticFieldLeak")
-        class GetNotificationsTask extends AsyncTask<Void, Void, List<Notification>> {
+        FirebaseDatabase.getInstance().getReference("Notifications")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-            @Override
-            protected List<Notification> doInBackground(Void... voids) {
-                return APP_DATABASE.requestDatabase(getApplicationContext()).dao().requestAllNotifications();
-            }
+                        if (snapshot.exists() && snapshot.hasChildren()){
 
-            @Override
-            protected void onPostExecute(List<Notification> notifications_inline) {
-                super.onPostExecute(notifications_inline);
-                notifications.addAll(notifications_inline);
-                adapter.notifyDataSetChanged();
+                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                if (dataSnapshot.getKey() == null ) continue;
+                                FirebaseDatabase.getInstance().getReference("Notifications")
+                                        .child(dataSnapshot.getKey())
+                                        .addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                if (snapshot.exists()){
+                                                    Object data = snapshot.getValue();
+                                                    if (data != null){
 
-                if (adapter.getItemCount() == 0) {
-                    findViewById(R.id.no_items).setVisibility(View.VISIBLE);
-                } else {
-                    findViewById(R.id.no_items).setVisibility(View.GONE);
-                }
-            }
+                                                        if (data instanceof HashMap) {
+                                                            Map.Entry<String,String> entry = (Map.Entry<String, String>) ((HashMap<?, ?>) data).entrySet().iterator().next();
+                                                            String key = entry.getKey();
+                                                            String value = entry.getValue();
+                                                            listNotifications.add(value);
+                                                            adapter.submitList(listNotifications);
 
-        }
-        new GetNotificationsTask().execute();
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+
+                                            }
+                                        });
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
     }
-
     @Override
-    public void onNotificationClicked(Notification notification, int position) {
-        Dialog previewNotification = new Dialog(this);
+    public void onNotificationClicked(String notification, int position) {
 
-        previewNotification.requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-        previewNotification.setContentView(R.layout.preview_notification_dialog);
-
-        // enable dialog cancel
-        previewNotification.setCancelable(true);
-        previewNotification.setOnCancelListener(dialog -> previewNotification.dismiss());
-
-        // notification title
-        TextView notificationTitle = previewNotification.findViewById(R.id.notification_title);
-        notificationTitle.setText(notification.title);
-
-        // notification message
-        TextView notificationMessage = previewNotification.findViewById(R.id.notification_description);
-        notificationMessage.setText(notification.content);
-
-        TextView notificationDate = previewNotification.findViewById(R.id.notification_date);
-        notificationDate.setText(Helper.get_formatted_date(notification.created_at));
-
-        // confirm allow
-        TextView confirmAllow = previewNotification.findViewById(R.id.confirm_allow);
-        confirmAllow.setOnClickListener(v1 -> {
-            notification.read = true;
-            dao.requestInsertNotification(notification);
-            // refresh notifications
-            notifications.clear();
-            adapter.notifyDataSetChanged();
-            requestNotifications();
-            // dismiss dialog
-            previewNotification.dismiss();
-        });
-
-        if (previewNotification.getWindow() != null) {
-            previewNotification.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            previewNotification.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        }
-
-        previewNotification.show();
     }
 }

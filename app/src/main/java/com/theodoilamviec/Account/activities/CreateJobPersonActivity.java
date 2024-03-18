@@ -7,8 +7,6 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,6 +23,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -37,10 +36,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
+import com.theodoilamviec.Account.DB.APP_DATABASE;
 import com.theodoilamviec.Account.Job;
 import com.theodoilamviec.Account.JobDocument;
+import com.theodoilamviec.Account.JobNotification;
+import com.theodoilamviec.Account.JobNotificationLocal;
 import com.theodoilamviec.Account.JobUser;
+import com.theodoilamviec.Account.PermissionJob;
+import com.theodoilamviec.Account.PermissionProject;
 import com.theodoilamviec.Account.User;
 import com.theodoilamviec.Account.adapters.FileAttachedAdapter;
 import com.theodoilamviec.Account.adapters.PersonGroupAdapter;
@@ -48,7 +51,6 @@ import com.theodoilamviec.theodoilamviec.databinding.ActivityCreateJobPersonBind
 import com.theodoilamviec.theodoilamviec.databinding.ItemDialogContentFileBinding;
 import com.theodoilamviec.theodoilamviec.databinding.ItemDialogPersonListBinding;
 
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -56,10 +58,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
-public class CreateJobPersonActivity extends AppCompatActivity implements PersonGroupAdapter.IClickPersonItem {
-
-
+public class CreateJobPersonActivity extends AppCompatActivity implements
+        PersonGroupAdapter.IClickPersonItem, FileAttachedAdapter.IClickFileAttached {
     ActivityCreateJobPersonBinding binding;
     Long startTime = 0L;
     Long endTime = 0L;
@@ -69,22 +71,18 @@ public class CreateJobPersonActivity extends AppCompatActivity implements Person
     List<User> userChooseList = new ArrayList<>();
     PersonGroupAdapter personGroupAdapter;
     String[] priorityList = new String[]{"New", "Medium", "Urgent"};
+    String[] statusJobList = new String[]{"New", "Responding", "Finished"};
     List<User> usersList = new ArrayList<>();
     List<String> usersInGroupList = new ArrayList<>();
-
     FileAttachedAdapter fileAttachedAdapter;
-    List<Uri> uriImageList = new ArrayList<>();
-    List<Uri> uriPdfList = new ArrayList<>();
-    List<Uri> uriWordList = new ArrayList<>();
-
-    String idJob;
-
+    String uidCurrent = FirebaseAuth.getInstance().getUid();
+    static String idJob;
     List<JobDocument> jobDocumentList = new ArrayList<>();
-
     StorageReference storageReferenceImages;
     StorageReference storageReferencePdf;
     StorageReference storageReferenceWord;
 
+    int statusJob = 0;
     private final ActivityResultLauncher<Intent> pdfPickerLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
@@ -95,18 +93,17 @@ public class CreateJobPersonActivity extends AppCompatActivity implements Person
                         if (pdfUri != null) {
                             fileName = getFileName(pdfUri);
                             StorageReference pdfStorage = storageReferencePdf.child(fileName);
-                            pdfStorage.putFile(pdfUri).addOnSuccessListener(taskSnapshot -> {
-                                pdfStorage.getDownloadUrl().addOnSuccessListener(uri -> {
-                                    String idJobDocument = String.valueOf(System.currentTimeMillis() + 1);
-                                    JobDocument jobDocument = new JobDocument(idJob, idJobDocument, fileName, uri.toString());
-                                    jobDocumentList.add(jobDocument);
-                                    fileAttachedAdapter.submitList(jobDocumentList);
-                                });
-                            });
+                            pdfStorage.putFile(pdfUri).addOnSuccessListener(taskSnapshot -> pdfStorage.getDownloadUrl().addOnSuccessListener(uri -> {
+                                String idJobDocument = String.valueOf(System.currentTimeMillis() + 1);
+                                JobDocument jobDocument = new JobDocument(idJob, idJobDocument, fileName, uri.toString());
+                                jobDocumentList.add(jobDocument);
+                                fileAttachedAdapter.submitList(jobDocumentList);
+                                if (dialogFile != null) dialogFile.dismiss();
+
+                            }));
                         } else {
                             fileName = null;
                         }
-                        if (dialogFile != null) dialogFile.dismiss();
                     }
                 } else {
                     Toast.makeText(CreateJobPersonActivity.this, "No PDF selected", Toast.LENGTH_SHORT).show();
@@ -130,6 +127,7 @@ public class CreateJobPersonActivity extends AppCompatActivity implements Person
         }
         return result;
     }
+
     private final ActivityResultLauncher<Intent> wordPickerLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
@@ -146,12 +144,12 @@ public class CreateJobPersonActivity extends AppCompatActivity implements Person
                                     JobDocument jobDocument = new JobDocument(idJob, idJobDocument, fileName, uri.toString());
                                     jobDocumentList.add(jobDocument);
                                     fileAttachedAdapter.submitList(jobDocumentList);
+                                    if (dialogFile != null) dialogFile.dismiss();
                                 });
                             });
                         } else {
                             fileName = null;
                         }
-                        if (dialogFile != null) dialogFile.dismiss();
                     }
                 } else {
                     Toast.makeText(CreateJobPersonActivity.this, "No PDF selected", Toast.LENGTH_SHORT).show();
@@ -159,17 +157,29 @@ public class CreateJobPersonActivity extends AppCompatActivity implements Person
             });
 
 
+    String idProject = "";
+
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityCreateJobPersonBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        idJob = String.valueOf(System.currentTimeMillis());
-        fileAttachedAdapter = new FileAttachedAdapter();
+        Intent intent = getIntent();
+        idProject = intent.getStringExtra("id_project");
 
+        idJob = String.valueOf(System.currentTimeMillis());
+        fileAttachedAdapter = new FileAttachedAdapter(this, this);
         storageReferenceImages = FirebaseStorage.getInstance().getReference("images");
         storageReferencePdf = FirebaseStorage.getInstance().getReference("pdfs");
         storageReferenceWord = FirebaseStorage.getInstance().getReference("words");
+
+        Calendar calendarNow = Calendar.getInstance();
+        int year = calendarNow.get(Calendar.YEAR);
+        int month = calendarNow.get(Calendar.MONTH);
+        int dateOfMonth = calendarNow.get(Calendar.DAY_OF_MONTH);
+        binding.tvStartDatePicker.setText(dateOfMonth + "/" + month + "/" + year);
+        binding.tvEndDatePicker.setText(dateOfMonth + "/" + month + "/" + year);
 
         binding.rcvFile.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         binding.rcvFile.setAdapter(fileAttachedAdapter);
@@ -177,7 +187,22 @@ public class CreateJobPersonActivity extends AppCompatActivity implements Person
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, priorityList);
         binding.spPriority.setAdapter(adapter);
 
+        ArrayAdapter<String> adapterStatusJob = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, statusJobList);
+        binding.spStatusJob.setAdapter(adapterStatusJob);
+
         getUsersInGroupList();
+
+        binding.spStatusJob.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                statusJob = position;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
         binding.spPriority.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -192,14 +217,55 @@ public class CreateJobPersonActivity extends AppCompatActivity implements Person
 
         binding.btnAdd.setOnClickListener(e -> {
             String nameJob = binding.edtNameJob.getText().toString().trim();
-            Job job = new Job(idJob, nameJob, startTime, endTime, highPriority);
+            Job job = new Job(idJob, nameJob, startTime, endTime, highPriority, idProject, statusJob);
             setJob(job);
+
+            String idPermissions = String.valueOf(System.currentTimeMillis());
+            PermissionJob permissionJob = new PermissionJob(idPermissions, uidCurrent, idJob, idProject);
+            setPermissionJob(permissionJob);
+
+            String idJobPermission = String.valueOf(System.currentTimeMillis());
+
+            JobNotification jobNotificationLocal = new JobNotification(job, idJobPermission, endTime, idProject);
+            setNotifications(jobNotificationLocal);
+
+            for (JobDocument jobDocument : jobDocumentList) {
+                setJobDocument(jobDocument);
+            }
 
             for (User user : userChooseList) {
                 String idJobUser = String.valueOf(System.currentTimeMillis() + 2);
                 JobUser jobUser = new JobUser(idJob, idJobUser, user);
+                String idPermissionProject = String.valueOf(System.currentTimeMillis() + 3);
+
+                PermissionProject project = new PermissionProject(
+                        idPermissionProject,
+                        user.getUid(),
+                        idProject
+                );
+                setPermissionProject(project);
                 setJobUser(jobUser);
             }
+
+            binding.edtNameJob.setText("");
+            binding.tvStartDatePicker.setText(dateOfMonth + "/" + month + "/" + year);
+            binding.tvEndDatePicker.setText(dateOfMonth + "/" + month + "/" + year);
+            binding.spPriority.setSelection(0);
+            binding.tvNamePerson.setText("");
+            personGroupAdapter.submitList(new ArrayList<>());
+            fileAttachedAdapter.submitList(new ArrayList<>());
+
+            APP_DATABASE.requestDatabase(this).dao().insertJobNotificationLocal(new
+                    JobNotificationLocal(
+                    FirebaseAuth.getInstance().getUid(),
+                    idJob,
+                    idProject,
+                    nameJob,
+                    endTime
+            ));
+
+            Toast.makeText(this, "Tạo công việc thành công ", Toast.LENGTH_SHORT).show();
+            finish();
         });
         binding.layoutStartDate.setOnClickListener(e -> {
             showDialogTime(true);
@@ -218,27 +284,22 @@ public class CreateJobPersonActivity extends AppCompatActivity implements Person
 
         });
 
-//        getListFile();
     }
 
     public void getUsersInGroupList() {
         FirebaseDatabase.getInstance().getReference("JobUsers")
+                .child(idProject)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-
                         if (snapshot.exists() && snapshot.hasChildren()) {
                             List<String> nameUser = new ArrayList<>();
                             for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                                 JobUser jobUser = dataSnapshot.getValue(JobUser.class);
-                                if (jobUser != null) {
+                                if (jobUser != null && jobUser.getUser() != null && jobUser.getUser().getUid() != null) {
                                     usersInGroupList.add(jobUser.getUser().getUid());
-                                    String name = jobUser.getUser().getUserName();
-                                    nameUser.add(name.substring(0, name.indexOf("@gmail")));
                                 }
                             }
-                            String nameList = String.join(", ", nameUser);
-                            binding.tvNamePerson.setText(nameList);
                         }
                     }
 
@@ -287,6 +348,13 @@ public class CreateJobPersonActivity extends AppCompatActivity implements Person
                 });
     }
 
+    private void setNotifications(JobNotification jobPermission) {
+        FirebaseDatabase.getInstance().getReference("JobNotifications")
+                .child(jobPermission.getJob().getIdJob())
+                .child(jobPermission.getIdJobPermission())
+                .setValue(jobPermission);
+    }
+
     private void showDialogTime(Boolean isStarted) {
         Calendar calendar = Calendar.getInstance();
         @SuppressLint("SetTextI18n") DatePickerDialog datePickerDialog = new DatePickerDialog(this, (datePicker, i, i1, i2) -> {
@@ -304,18 +372,34 @@ public class CreateJobPersonActivity extends AppCompatActivity implements Person
         datePickerDialog.show();
     }
 
+    public void setPermissionJob(PermissionJob permissionJob) {
+        FirebaseDatabase.getInstance().getReference("Permissions")
+                .child(idProject)
+                .child(permissionJob.getIdJob())
+                .push()
+                .setValue(permissionJob);
+    }
+
     public void setJob(Job job) {
-        FirebaseDatabase.getInstance().getReference("Jobs").child(job.getIdJob())
+        FirebaseDatabase.getInstance().getReference("Jobs")
+                .child(idProject)
+                .child(job.getIdJob())
                 .setValue(job);
     }
 
     public void setJobDocument(JobDocument jobDocument) {
-        FirebaseDatabase.getInstance().getReference("JobDocuments").child(jobDocument.getIdJob())
+        FirebaseDatabase.getInstance().getReference("JobDocuments")
+                .child(idProject)
+                .child(jobDocument.getIdJob())
+                .child(jobDocument.getIdJobDocument())
                 .setValue(jobDocument);
     }
 
     public void setJobUser(JobUser jobUser) {
-        FirebaseDatabase.getInstance().getReference("JobUsers").child(jobUser.getIdJob())
+        FirebaseDatabase.getInstance().getReference("JobUsers")
+                .child(idProject)
+                .child(jobUser.getIdJob())
+                .child(jobUser.getIdJobUser())
                 .setValue(jobUser);
     }
 
@@ -333,31 +417,6 @@ public class CreateJobPersonActivity extends AppCompatActivity implements Person
         binding1.rcvPerson.setAdapter(personGroupAdapter);
         binding1.rcvPerson.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
 
-    }
-
-    public void getListFile() {
-        FirebaseDatabase.getInstance().getReference("JobDocuments")
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                        if (snapshot.exists() && snapshot.hasChildren()) {
-
-                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                JobDocument jobDocument = dataSnapshot.getValue(JobDocument.class);
-                                if (jobDocument != null) {
-                                    jobDocumentList.add(jobDocument);
-                                }
-                            }
-                            fileAttachedAdapter.submitList(jobDocumentList);
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Log.e("onCancelled: ", "Error = " + error.getMessage());
-                    }
-                });
     }
 
     public void showDialogAttachFile() {
@@ -390,21 +449,22 @@ public class CreateJobPersonActivity extends AppCompatActivity implements Person
         });
         dialogFile.show();
     }
+
     private void openPdfPicker() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.setType("application/pdf");
         pdfPickerLauncher.launch(intent);
     }
+
     private void openWordsPicker() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.setType("application/msword|application/vnd.openxmlformats-officedocument.wordprocessingml.document");
         wordPickerLauncher.launch(intent);
     }
 
-    private ActivityResultLauncher<PickVisualMediaRequest> pickImage =
+    private final ActivityResultLauncher<PickVisualMediaRequest> pickImage =
             registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
                 if (uri != null) {
-                    uriImageList.add(uri);
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.getDefault());
                     Date dateNow = new Date();
                     String fileName = dateFormat.format(dateNow);
@@ -418,6 +478,8 @@ public class CreateJobPersonActivity extends AppCompatActivity implements Person
                                         JobDocument jobDocument = new JobDocument(idJob, idJobDocument, fileName, uri.toString());
                                         jobDocumentList.add(jobDocument);
                                         fileAttachedAdapter.submitList(jobDocumentList);
+
+                                        if (dialog != null) dialog.dismiss();
                                     }
                                 });
                             });
@@ -427,7 +489,7 @@ public class CreateJobPersonActivity extends AppCompatActivity implements Person
             });
 
 
-    private ActivityResultLauncher<String[]> requestPermissionLauncher =
+    private final ActivityResultLauncher<String[]> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), isGranted -> {
                 if (!isGranted.containsValue(false)) {
                     pickImage.launch(new PickVisualMediaRequest.Builder()
@@ -439,5 +501,27 @@ public class CreateJobPersonActivity extends AppCompatActivity implements Person
     @Override
     public void getPerson(User user) {
         userChooseList.add(user);
+        List<String> listNameString = userChooseList.stream().map(it -> it.getUserName().substring(0, it.getUserName().indexOf("@gmail"))).collect(Collectors.toList());
+        String data = String.join(", ", listNameString);
+        binding.tvNamePerson.setText(data);
+    }
+
+
+    public void setPermissionProject(PermissionProject project) {
+        for (User userInfo : userChooseList) {
+            FirebaseDatabase.getInstance().getReference("PermissionProject")
+                    .child(userInfo.getUid())
+                    .child(idProject)
+                    .setValue(project);
+        }
+    }
+    @Override
+    public void deleteFile(JobDocument jobDocument) {
+
+    }
+
+    @Override
+    public void getFile(JobDocument jobDocument) {
+
     }
 }

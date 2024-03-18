@@ -11,6 +11,7 @@ import androidx.appcompat.widget.Toolbar;
 
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.theodoilamviec.Account.adapters.ProjectActivity;
 import com.theodoilamviec.theodoilamviec.Menu.HomeActivity;
 import com.theodoilamviec.theodoilamviec.R;
 
@@ -37,14 +38,14 @@ public class DangNhapActivity extends AppCompatActivity implements UserView,
         binding.txtsignUp.setOnClickListener(this);
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
 
-            startActivity(new Intent(DangNhapActivity.this, HomeActivity.class));
+            startActivity(new Intent(DangNhapActivity.this, ProjectActivity.class));
         }
     }
 
 
     @Override
     public void OnSucess() {
-        startActivity(new Intent(DangNhapActivity.this, HomeActivity.class));
+        startActivity(new Intent(DangNhapActivity.this, ProjectActivity.class));
 
     }
 

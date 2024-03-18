@@ -6,6 +6,13 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
+import com.theodoilamviec.Account.JobDocument;
+import com.theodoilamviec.Account.JobDocumentLocal;
+import com.theodoilamviec.Account.JobLocal;
+import com.theodoilamviec.Account.JobNotificationLocal;
+import com.theodoilamviec.Account.JobUserLocal;
+import com.theodoilamviec.Account.PermissionJobLocal;
+import com.theodoilamviec.ProjectLocal;
 import com.theodoilamviec.theodoilamviec.models.Category;
 import com.theodoilamviec.theodoilamviec.models.Note;
 import com.theodoilamviec.theodoilamviec.models.Notification;
@@ -101,14 +108,12 @@ public interface DAO {
     @Query("DELETE FROM notification")
     void requestDeleteAllNotification();
 
-    @Query("SELECT * FROM notification ORDER BY created_at DESC")
+    @Query("SELECT * FROM notification")
     List<Notification> requestAllNotifications();
 
     @Query("SELECT * FROM notification WHERE id = :id LIMIT 1")
     Notification requestNotification(long id);
 
-    @Query("SELECT COUNT(id) FROM notification WHERE read = 0")
-    Integer requestNotificationUnreadCount();
 
     @Query("SELECT COUNT(id) FROM notification")
     Integer requestNotificationCount();
@@ -128,6 +133,30 @@ public interface DAO {
 
     @Query("DELETE FROM trash_notes")
     void request_delete_all_trash_note();
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertJobNotificationLocal(JobNotificationLocal jobNotification);
 
+    @Query("SELECT * FROM JobNotificationLocal ")
+    List<JobNotificationLocal> requestAllJobNotificationLocal();
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertProjects(ProjectLocal projectLocal);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertJobs(JobLocal jobLocal);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertJobNotifications(JobNotificationLocal jobNotificationLocal);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertJobDocument(JobDocumentLocal jobDocument);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertJobUser(JobUserLocal jobUserLocal);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertPermissionJob(PermissionJobLocal permissionJobLocal);
+
+    @Query("DELETE FROM JobNotificationLocal WHERE idProject = :idProject AND idJob = :idJob")
+    void deleteJobNotificationLocalById(String idProject, String idJob);
 }

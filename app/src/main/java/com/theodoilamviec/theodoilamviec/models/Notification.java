@@ -1,5 +1,6 @@
 package com.theodoilamviec.theodoilamviec.models;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -10,71 +11,41 @@ import java.io.Serializable;
 public class Notification implements Serializable {
 
     @PrimaryKey
-    public Long id;
-
+    @NonNull
+    public String id;
     @ColumnInfo(name = "title")
-    public String title;
-
-    @ColumnInfo(name = "content")
-    public String content;
-
+    public String nameJob;
     @ColumnInfo(name = "obj_id")
-    public Long obj_id;
+    public String idJob;
 
-    // extra attribute
-    @ColumnInfo(name = "read")
-    public Boolean read = false;
+    public Notification(String id, String nameJob, String idJob) {
+        this.id = id;
+        this.nameJob = nameJob;
+        this.idJob = idJob;
+    }
 
-    @ColumnInfo(name = "created_at")
-    public Long created_at;
-
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
+
+    public String getNameJob() {
+        return nameJob;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setNameJob(String nameJob) {
+        this.nameJob = nameJob;
     }
 
-    public String getContent() {
-        return content;
+    public String getIdJob() {
+        return idJob;
     }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public Boolean getRead() {
-        return read;
-    }
-
-    public void setRead(Boolean read) {
-        this.read = read;
-    }
-
-    public Long getCreated_at() {
-        return created_at;
-    }
-
-    public void setCreated_at(Long created_at) {
-        this.created_at = created_at;
-    }
-
-    public static Notification entity(NotificationModel notification) {
-        Notification entity = new Notification();
-        entity.setId(notification.id);
-        entity.setTitle(notification.title);
-        entity.setContent(notification.content);
-        entity.setRead(notification.read);
-        entity.setCreated_at(notification.created_at);
-        return entity;
+    public void setIdJob(String idJob) {
+        this.idJob = idJob;
     }
 }

@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PersonGroupAdapter extends RecyclerView.Adapter<PersonGroupAdapter.PersonGroupViewHolder> {
-    private List<User> usersList = new ArrayList<>();
-    private IClickPersonItem iClickPersonItem ;
+    private final List<User> usersList = new ArrayList<>();
+    private final IClickPersonItem iClickPersonItem ;
     public interface IClickPersonItem {
         void getPerson(User user);
     }
@@ -55,9 +55,7 @@ public class PersonGroupAdapter extends RecyclerView.Adapter<PersonGroupAdapter.
         }
         public void setPerson(User user, IClickPersonItem item){
             binding.tvPerson.setText(user.getUserName());
-            binding.btnAdd.setOnClickListener(e ->{
-                item.getPerson(user);
-            });
+            binding.btnAdd.setOnClickListener(e -> item.getPerson(user));
         }
     }
 }
