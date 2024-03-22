@@ -124,7 +124,7 @@ public class InfoJobActivity extends AppCompatActivity implements FileAttachedAd
         fileAttachedAdapter = new FileAttachedAdapter(this, this);
         fileAttachedAdapter.setShowFullScreen(true);
         isMenu = intent.getIntExtra("isMenu", -1);
-        System.out.println("onCreate = "+ isMenu);
+        System.out.println("onCreate = " + isMenu);
 
         Bundle bundle = intent.getBundleExtra("bundle");
         if (bundle != null) {
@@ -351,7 +351,7 @@ public class InfoJobActivity extends AppCompatActivity implements FileAttachedAd
 
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
-        System.out.println("onCreateOptionsMenu = "+ isMenu);
+        System.out.println("onCreateOptionsMenu = " + isMenu);
         if (isMenu == -1) {
             getMenuInflater().inflate(R.menu.item_right_toolbar, menu);
         }
@@ -407,7 +407,7 @@ public class InfoJobActivity extends AppCompatActivity implements FileAttachedAd
                 job.setTimeStartDate(timeStartPicker == 0 ? job.getTimeStartDate() : timeStartPicker);
                 job.setTimeEndDate(timeEndPicker == 0 ? job.getTimeEndDate() : timeEndPicker);
                 job.setStatusJob(statusJob);
-                job.setUrlImage( urlImageJob.isEmpty() ? job.getUrlImage() : urlImageJob);
+                job.setUrlImage(urlImageJob.isEmpty() ? job.getUrlImage() : urlImageJob);
                 saveJob(job);
                 item.setIcon(R.drawable.baseline_edit_24);
                 permissionEdit = 0;
@@ -426,7 +426,7 @@ public class InfoJobActivity extends AppCompatActivity implements FileAttachedAd
                 .child(job.getIdJob())
                 .setValue(job);
 
-        if (!new HashSet<>(jobDocumentsList).containsAll(previousJobDocumentsList)) {
+        if (!new HashSet<>(previousJobDocumentsList).containsAll(jobDocumentsList)) {
             FirebaseDatabase.getInstance().getReference("JobDocuments").child(job.getIdJob()).removeValue();
             for (JobDocument jobDocument : jobDocumentsList) {
                 FirebaseDatabase.getInstance().getReference("JobDocuments")
@@ -435,7 +435,7 @@ public class InfoJobActivity extends AppCompatActivity implements FileAttachedAd
                         .child(jobDocument.getIdJobDocument()).setValue(jobDocument);
             }
         }
-        if (!new HashSet<>(jobUsersList).containsAll(previousJobUsersList)) {
+        if (!new HashSet<>(previousJobUsersList).containsAll(jobUsersList)) {
             FirebaseDatabase.getInstance().getReference("JobUsers")
                     .child(job.getIdProject())
                     .child(job.getIdJob()).removeValue();
@@ -523,6 +523,7 @@ public class InfoJobActivity extends AppCompatActivity implements FileAttachedAd
     public void getPerson(User user) {
         userChooseList.remove(user);
         userChooseList.add(user);
+        jobUsersList.add(new JobUser(jobUsersList.get(0).getIdJob(), String.valueOf(System.currentTimeMillis()), user));
         List<String> listNameString = userChooseList.stream().map(it -> it.getUserName().substring(0, it.getUserName().indexOf("@gmail"))).collect(Collectors.toList());
         String data = String.join(", ", listNameString);
         binding.tvNamePerson.setText(data);
@@ -530,7 +531,7 @@ public class InfoJobActivity extends AppCompatActivity implements FileAttachedAd
         usersList.remove(user);
         if (usersList.isEmpty()) {
             if (dialog != null) dialog.dismiss();
-        }else {
+        } else {
             personGroupAdapter.submitList(usersList);
         }
     }
