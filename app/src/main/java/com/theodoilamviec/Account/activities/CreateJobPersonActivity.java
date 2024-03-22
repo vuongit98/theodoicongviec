@@ -28,6 +28,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -74,6 +75,7 @@ public class CreateJobPersonActivity extends AppCompatActivity implements
     String[] statusJobList = new String[]{"New", "Responding", "Finished"};
     List<User> usersList = new ArrayList<>();
     List<String> usersInGroupList = new ArrayList<>();
+    String urlImageJob = "";
     FileAttachedAdapter fileAttachedAdapter;
     String uidCurrent = FirebaseAuth.getInstance().getUid();
     static String idJob;
@@ -155,6 +157,27 @@ public class CreateJobPersonActivity extends AppCompatActivity implements
                     Toast.makeText(CreateJobPersonActivity.this, "No PDF selected", Toast.LENGTH_SHORT).show();
                 }
             });
+    private final ActivityResultLauncher<PickVisualMediaRequest> pickImageBackground =
+            registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
+                if (uri != null) {
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.getDefault());
+                    Date dateNow = new Date();
+                    String fileName = dateFormat.format(dateNow);
+                    StorageReference imageStorage = storageReferenceImages.child(fileName);
+                    imageStorage.putFile(uri)
+                            .addOnSuccessListener(taskSnapshot -> {
+                                imageStorage.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        urlImageJob = uri.toString();
+                                        Glide.with(CreateJobPersonActivity.this).load(uri).into(binding.imgBg);
+                                    }
+                                });
+                            });
+                } else {
+                    Log.d("PhotoPicker", "No media selected");
+                }
+            });
 
 
     String idProject = "";
@@ -217,7 +240,7 @@ public class CreateJobPersonActivity extends AppCompatActivity implements
 
         binding.btnAdd.setOnClickListener(e -> {
             String nameJob = binding.edtNameJob.getText().toString().trim();
-            Job job = new Job(idJob, nameJob, startTime, endTime, highPriority, idProject, statusJob, false);
+            Job job = new Job(idJob, nameJob, startTime, endTime, highPriority, idProject, statusJob, false, urlImageJob);
             setJob(job);
 
             String idPermissions = String.valueOf(System.currentTimeMillis());
@@ -282,6 +305,12 @@ public class CreateJobPersonActivity extends AppCompatActivity implements
             showDialog();
             getListPerson();
 
+        });
+
+        binding.imgBg.setOnClickListener(e -> {
+            pickImageBackground.launch(new PickVisualMediaRequest.Builder()
+                    .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                    .build());
         });
 
     }
@@ -359,13 +388,13 @@ public class CreateJobPersonActivity extends AppCompatActivity implements
         Calendar calendar = Calendar.getInstance();
         @SuppressLint("SetTextI18n") DatePickerDialog datePickerDialog = new DatePickerDialog(this, (datePicker, i, i1, i2) -> {
             Calendar getTime = Calendar.getInstance();
-            getTime.set(i, i1, i2);
+            getTime.set(i, i1 + 1, i2);
             if (isStarted) {
                 startTime = getTime.getTimeInMillis();
-                binding.tvStartDatePicker.setText(i2 + "/" + i1 + "/" + i);
+                binding.tvStartDatePicker.setText(i2 + "/" + (i1 + 1) + "/" + i);
             } else {
                 endTime = getTime.getTimeInMillis();
-                binding.tvEndDatePicker.setText(i2 + "/" + i1 + "/" + i);
+                binding.tvEndDatePicker.setText(i2 + "/" + (i1 + 1) + "/" + i);
 
             }
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
@@ -501,8 +530,11 @@ public class CreateJobPersonActivity extends AppCompatActivity implements
     @Override
     public void getPerson(User user) {
         usersList.remove(user);
-        personGroupAdapter.submitList(usersList);
-
+        if (usersList.isEmpty()){
+            if (dialog != null ) dialog.dismiss();
+        }else {
+            personGroupAdapter.submitList(usersList);
+        }
         usersInGroupList.add(user.getUid());
         userChooseList.add(user);
         List<String> listNameString = userChooseList.stream().map(it -> it.getUserName().substring(0, it.getUserName().indexOf("@gmail"))).collect(Collectors.toList());

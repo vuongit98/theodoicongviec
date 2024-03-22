@@ -5,8 +5,10 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,17 +18,24 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.theodoilamviec.Account.DB.APP_DATABASE;
 import com.theodoilamviec.Account.Job;
 import com.theodoilamviec.Account.JobDocument;
@@ -34,6 +43,7 @@ import com.theodoilamviec.Account.JobUser;
 import com.theodoilamviec.Account.PermissionJob;
 import com.theodoilamviec.Account.PermissionProject;
 import com.theodoilamviec.Account.User;
+import com.theodoilamviec.Account.activities.CreateJobPersonActivity;
 import com.theodoilamviec.Account.adapters.FileAttachedAdapter;
 import com.theodoilamviec.Account.adapters.PersonGroupAdapter;
 import com.theodoilamviec.Account.adapters.ProjectActivity;
@@ -42,11 +52,13 @@ import com.theodoilamviec.theodoilamviec.databinding.ActivityInfoJobBinding;
 import com.theodoilamviec.theodoilamviec.databinding.ItemDialogPersonListBinding;
 import com.theodoilamviec.theodoilamviec.utils.GridSpacingItemDecoration;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -76,12 +88,39 @@ public class InfoJobActivity extends AppCompatActivity implements FileAttachedAd
     String[] statusJobList = new String[]{"New", "Responding", "Finished"};
     int isMenu = -1;
     Calendar calendar;
+    StorageReference storageReferenceImages;
+    String urlImageJob = "";
+
+    private final ActivityResultLauncher<PickVisualMediaRequest> pickImageBackground =
+            registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
+                if (uri != null) {
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.getDefault());
+                    Date dateNow = new Date();
+                    String fileName = dateFormat.format(dateNow);
+                    StorageReference imageStorage = storageReferenceImages.child(fileName);
+                    imageStorage.putFile(uri)
+                            .addOnSuccessListener(taskSnapshot -> {
+                                imageStorage.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        urlImageJob = uri.toString();
+                                        Glide.with(InfoJobActivity.this).load(uri).into(binding.imgBg);
+                                    }
+                                });
+                            });
+                } else {
+                    Log.d("PhotoPicker", "No media selected");
+                }
+            });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityInfoJobBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         Intent intent = getIntent();
+        storageReferenceImages = FirebaseStorage.getInstance().getReference("images");
+
         fileAttachedAdapter = new FileAttachedAdapter(this, this);
         fileAttachedAdapter.setShowFullScreen(true);
         isMenu = intent.getIntExtra("isMenu", -1);
@@ -149,6 +188,7 @@ public class InfoJobActivity extends AppCompatActivity implements FileAttachedAd
             getListPermissionJobs(job.getIdJob());
             getJobUserById(job.getIdJob());
             getJobDocumentsById(job.getIdJob());
+            Glide.with(this).load(job.getUrlImage()).error(R.drawable.businessman).into(binding.imgBg);
             binding.edtNameJob.setEnabled(false);
             binding.tvEndDatePicker.setEnabled(false);
             binding.tvStartDatePicker.setEnabled(false);
@@ -156,6 +196,7 @@ public class InfoJobActivity extends AppCompatActivity implements FileAttachedAd
             binding.spStatusJob.setEnabled(false);
             binding.ivAttachFile.setEnabled(false);
             binding.ivAttachPeople.setEnabled(false);
+            binding.imgBg.setEnabled(false);
 
         }
 
@@ -175,6 +216,12 @@ public class InfoJobActivity extends AppCompatActivity implements FileAttachedAd
         binding.rcvFileAttached.setLayoutManager(new GridLayoutManager(this, 2));
         binding.rcvFileAttached.addItemDecoration(new GridSpacingItemDecoration(2, 10, true));
         binding.rcvFileAttached.setAdapter(fileAttachedAdapter);
+
+        binding.imgBg.setOnClickListener(e -> {
+            pickImageBackground.launch(new PickVisualMediaRequest.Builder()
+                    .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                    .build());
+        });
 
     }
 
@@ -234,7 +281,7 @@ public class InfoJobActivity extends AppCompatActivity implements FileAttachedAd
                                     String nameUser = jobUser.getUser().getUserName();
                                     stringUserList.add(nameUser.substring(0, nameUser.indexOf("@gmail")));
                                     userChooseList.add(jobUser.getUser());
-                                    usersInGroupList.add(nameUser.substring(0, nameUser.indexOf("@gmail")));
+                                    usersInGroupList.add(jobUser.getUser().getUid());
                                 }
                             }
                             String usersList = String.join(", ", stringUserList);
@@ -346,6 +393,8 @@ public class InfoJobActivity extends AppCompatActivity implements FileAttachedAd
                     binding.spStatusJob.setEnabled(true);
                     binding.ivAttachFile.setEnabled(true);
                     binding.ivAttachPeople.setEnabled(true);
+                    binding.imgBg.setEnabled(true);
+
 
                     item.setIcon(R.drawable.icon_category);
                 } else {
@@ -358,6 +407,7 @@ public class InfoJobActivity extends AppCompatActivity implements FileAttachedAd
                 job.setTimeStartDate(timeStartPicker == 0 ? job.getTimeStartDate() : timeStartPicker);
                 job.setTimeEndDate(timeEndPicker == 0 ? job.getTimeEndDate() : timeEndPicker);
                 job.setStatusJob(statusJob);
+                job.setUrlImage( urlImageJob.isEmpty() ? job.getUrlImage() : urlImageJob);
                 saveJob(job);
                 item.setIcon(R.drawable.baseline_edit_24);
                 permissionEdit = 0;
@@ -476,5 +526,12 @@ public class InfoJobActivity extends AppCompatActivity implements FileAttachedAd
         List<String> listNameString = userChooseList.stream().map(it -> it.getUserName().substring(0, it.getUserName().indexOf("@gmail"))).collect(Collectors.toList());
         String data = String.join(", ", listNameString);
         binding.tvNamePerson.setText(data);
+        usersInGroupList.add(user.getUid());
+        usersList.remove(user);
+        if (usersList.isEmpty()) {
+            if (dialog != null) dialog.dismiss();
+        }else {
+            personGroupAdapter.submitList(usersList);
+        }
     }
 }

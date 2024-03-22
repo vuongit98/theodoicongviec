@@ -15,10 +15,19 @@ public class Job implements Parcelable {
     private Long timeEndDate ;
     private int highPriority;
     private String idProject ;
+    private String urlImage ;
     private boolean isDeleted = false;
 
     private int statusJob = 0 ; // new:0 , responsing: 1 ,finished: 2, unfinished: 3
     public Job() {
+    }
+
+    public String getUrlImage() {
+        return urlImage;
+    }
+
+    public void setUrlImage(String urlImage) {
+        this.urlImage = urlImage;
     }
 
     public boolean isDeleted() {
@@ -29,7 +38,7 @@ public class Job implements Parcelable {
         isDeleted = deleted;
     }
 
-    public Job(String idJob, String nameJob, Long timeStartDate, Long timeEndDate, int highPriority, String idProject, int statusJob, boolean isDeleted) {
+    public Job(String idJob, String nameJob, Long timeStartDate, Long timeEndDate, int highPriority, String idProject, int statusJob, boolean isDeleted, String urlImage) {
         this.idJob = idJob;
         this.nameJob = nameJob;
         this.timeStartDate = timeStartDate;
@@ -38,6 +47,7 @@ public class Job implements Parcelable {
         this.idProject = idProject;
         this.statusJob = statusJob;
         this.isDeleted = isDeleted;
+        this.urlImage = urlImage;
     }
 
     protected Job(Parcel in) {

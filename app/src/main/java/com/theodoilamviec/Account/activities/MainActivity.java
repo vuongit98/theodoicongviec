@@ -63,6 +63,10 @@ public class MainActivity extends AppCompatActivity implements ISyncData {
         mainBinding.tiendo.setOnClickListener(e -> startActivity(new Intent(MainActivity.this, StaticJobActivity.class)));
 
         mainBinding.dongbo.setOnClickListener(e -> {
+            syncDataManager.syncDataProjects();
+        });
+
+        mainBinding.lichlamviec.setOnClickListener(e -> {
             startActivity(new Intent(MainActivity.this, TimeJobActivity.class));
         });
     }

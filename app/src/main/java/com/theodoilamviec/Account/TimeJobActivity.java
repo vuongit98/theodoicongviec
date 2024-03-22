@@ -5,16 +5,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 
-import com.theodoilamviec.Account.adapters.ProjectActivity;
-import com.theodoilamviec.theodoilamviec.Menu.HomeActivity;
-import com.theodoilamviec.theodoilamviec.R;
+import com.theodoilamviec.theodoilamviec.InfoJobActivity;
 import com.theodoilamviec.theodoilamviec.adapter.JobAdapter;
 import com.theodoilamviec.theodoilamviec.databinding.ActivityTimeJobBinding;
 import com.theodoilamviec.theodoilamviec.utils.GridSpacingItemDecoration;
@@ -28,6 +22,7 @@ import java.util.Objects;
 
 import sun.bob.mcalendarview.listeners.OnDateClickListener;
 import sun.bob.mcalendarview.vo.DateData;
+
 
 public class TimeJobActivity extends AppCompatActivity implements TimeJobManager.ITimeJob, JobAdapter.IClickJob {
 
@@ -50,15 +45,14 @@ public class TimeJobActivity extends AppCompatActivity implements TimeJobManager
         timeJobManager = new TimeJobManager(this);
         binding.tvTitle.setVisibility(View.GONE);
         timeJobManager.getIdProjectList();
-        jobAdapter = new JobAdapter(this);
+        jobAdapter = new JobAdapter(this, this,false);
         binding.rcvItemJob.setLayoutManager(new GridLayoutManager(this,2));
         binding.rcvItemJob.addItemDecoration(new GridSpacingItemDecoration(2,10, true));
         binding.rcvItemJob.setAdapter(jobAdapter);
         binding.viewCalender.setOnDateClickListener(new OnDateClickListener() {
             @Override
             public void onDateClick(View view, DateData date) {
-                Toast.makeText(TimeJobActivity.this, "Test", Toast.LENGTH_SHORT).show();
-                calendar.set(date.getYear(), date.getMonth()-1, date.getDay());
+                calendar.set(date.getYear(), date.getMonth(), date.getDay());
                 binding.tvTitle.setVisibility(View.VISIBLE);
                 List<Job> jobList = dataMap.getOrDefault(calendar.getTimeInMillis(), new ArrayList<>());
                 if (jobList != null && jobList.isEmpty()){
@@ -85,8 +79,6 @@ public class TimeJobActivity extends AppCompatActivity implements TimeJobManager
     @Override
     public void getListJobByTime(HashMap<Long, List<Job>> dataTimJobMap) {
         dataMap.putAll(dataTimJobMap);
-        System.out.println("it = "+dataTimJobMap);
-
         for (Long it : dataMap.keySet()) {
             calendar.setTime(new Date(it));
             int year = calendar.get(Calendar.YEAR);
@@ -98,6 +90,16 @@ public class TimeJobActivity extends AppCompatActivity implements TimeJobManager
 
     @Override
     public void getJob(Job job) {
+        Intent intent = new Intent(TimeJobActivity.this, InfoJobActivity.class);
+        intent.putExtra("isMenu", 1);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("job", job);
+        intent.putExtra("bundle", bundle);
+        startActivity(intent);
+    }
+
+    @Override
+    public void removeJob(Job job) {
 
     }
 }

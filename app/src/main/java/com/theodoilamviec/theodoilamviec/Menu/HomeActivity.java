@@ -47,7 +47,7 @@ public class HomeActivity extends AppCompatActivity implements JobAdapter.IClick
         Intent intent = getIntent();
 
         idProject = intent.getStringExtra("id_project");
-        jobAdapter = new JobAdapter(this);
+        jobAdapter = new JobAdapter(this, this,false);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Job");
@@ -105,5 +105,11 @@ public class HomeActivity extends AppCompatActivity implements JobAdapter.IClick
         bundle.putParcelable("job", job);
         intentJob.putExtra("bundle",bundle);
         startActivity(intentJob);
+    }
+
+    @Override
+    public void removeJob(Job job) {
+        jobsList.remove(job);
+        jobAdapter.submitList(jobsList);
     }
 }

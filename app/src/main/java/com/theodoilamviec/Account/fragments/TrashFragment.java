@@ -49,7 +49,7 @@ public class TrashFragment extends Fragment implements JobAdapter.IClickJob, Tra
 
         // initialize bundle
         bundle = new Bundle();
-        jobAdapter = new JobAdapter(this);
+        jobAdapter = new JobAdapter(this ,requireContext(),true);
         trashFragmentManager = new TrashFragmentManager(this);
 
         // notes recyclerview
@@ -121,6 +121,12 @@ public class TrashFragment extends Fragment implements JobAdapter.IClickJob, Tra
         bundle.putParcelable("job", job);
         intent.putExtra("bundle", bundle);
         startActivity(intent);
+    }
+
+    @Override
+    public void removeJob(Job job) {
+        jobsList.remove(job);
+        jobAdapter.submitList(jobsList);
     }
 
     @Override
