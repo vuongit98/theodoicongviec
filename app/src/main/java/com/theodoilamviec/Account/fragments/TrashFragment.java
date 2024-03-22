@@ -1,11 +1,9 @@
 package com.theodoilamviec.Account.fragments;
 
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,37 +11,36 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.theodoilamviec.Account.DB.APP_DATABASE;
+import com.theodoilamviec.Account.Job;
 import com.theodoilamviec.Account.activities.TrashActivity;
-import com.theodoilamviec.Account.adapters.TrashNotesAdapter;
-import com.theodoilamviec.Account.listeners.TrashNotesListener;
-import com.theodoilamviec.Account.sheets.TrashNoteActionsBottomSheetModal;
+import com.theodoilamviec.theodoilamviec.InfoJobActivity;
 import com.theodoilamviec.theodoilamviec.R;
-
-import com.theodoilamviec.theodoilamviec.DB.APP_DATABASE;
+import com.theodoilamviec.theodoilamviec.adapter.JobAdapter;
 import com.theodoilamviec.theodoilamviec.models.TrashNote;
-
+import com.theodoilamviec.theodoilamviec.utils.GridSpacingItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TrashFragment extends Fragment implements TrashNotesListener {
+public class TrashFragment extends Fragment implements JobAdapter.IClickJob, TrashFragmentManager.IProjectData {
 
     // Bundle
     Bundle bundle;
 
     // View view
     View view;
-
-    private List<TrashNote> trashNotes;
-    private TrashNotesAdapter trashNotesAdapter;
+    JobAdapter jobAdapter;
+    TrashFragmentManager trashFragmentManager;
+    private List<Job> jobsList = new ArrayList<>();
 
     @Nullable
     @Override
@@ -52,20 +49,19 @@ public class TrashFragment extends Fragment implements TrashNotesListener {
 
         // initialize bundle
         bundle = new Bundle();
+        jobAdapter = new JobAdapter(this);
+        trashFragmentManager = new TrashFragmentManager(this);
 
         // notes recyclerview
         RecyclerView trashNotesRecyclerview = view.findViewById(R.id.notes_recyclerview);
-        trashNotesRecyclerview.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        trashNotesRecyclerview.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        trashNotesRecyclerview.addItemDecoration(new GridSpacingItemDecoration(2,10, true));
+        trashNotesRecyclerview.setAdapter(jobAdapter);
 
-        // notes list, adapter
-        trashNotes = new ArrayList<>();
-        trashNotesAdapter = new TrashNotesAdapter(trashNotes, this);
-        trashNotesRecyclerview.setAdapter(trashNotesAdapter);
-
-        requestTrashNotes();
+        trashFragmentManager.getAllProject();
 
         // delete all trash notes
-        ((TrashActivity) requireActivity()).extraAction.setOnClickListener(v -> {
+        TrashActivity.extraAction.setOnClickListener(v -> {
             Dialog confirmDialog = new Dialog(requireContext());
 
             confirmDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -106,93 +102,37 @@ public class TrashFragment extends Fragment implements TrashNotesListener {
         return view;
     }
 
-    /**
-     * request trash notes
-     */
-    private void requestTrashNotes() {
-        trashNotes.clear();
-        trashNotesAdapter.notifyDataSetChanged();
-
-        @SuppressLint("StaticFieldLeak")
-        class GetTrashNotesTask extends AsyncTask<Void, Void, List<TrashNote>> {
-
-            @Override
-            protected List<TrashNote> doInBackground(Void... voids) {
-                return APP_DATABASE.requestDatabase(getContext()).dao().request_trash_notes();
-            }
-
-            @Override
-            protected void onPostExecute(List<TrashNote> trash_notes_inline) {
-                super.onPostExecute(trash_notes_inline);
-                trashNotes.addAll(trash_notes_inline);
-                trashNotesAdapter.notifyDataSetChanged();
-
-                if (trashNotesAdapter.getItemCount() == 0) {
-                    view.findViewById(R.id.no_items).setVisibility(View.VISIBLE);
-                    ((TrashActivity) requireActivity()).extraAction.setEnabled(false);
-                } else {
-                    view.findViewById(R.id.no_items).setVisibility(View.GONE);
-                    ((TrashActivity) requireActivity()).extraAction.setEnabled(true);
-                }
-            }
-
-        }
-        new GetTrashNotesTask().execute();
-    }
 
     /**
      * request to delete all trash
      * notes records from database
      */
     private void requestDeleteAllTrashNotes() {
-        @SuppressLint("StaticFieldLeak")
-        class DeleteAllTrashNotesTask extends AsyncTask<Void, Void, Void> {
-            @Override
-            protected Void doInBackground(Void... voids) {
-                APP_DATABASE.requestDatabase(getContext()).dao().request_delete_all_trash_note();
-                return null;
-            }
+        trashFragmentManager.deleteAll(jobsList);
+        jobsList.forEach(it -> APP_DATABASE.requestDatabase(requireActivity()).dao().deleteJobNotificationLocal(it.getIdJob(), it.getIdProject()));
+        jobsList.clear();
+        jobAdapter.submitList(jobsList);
+    }
+    @Override
+    public void getJob(Job job) {
+        Intent intent = new Intent(requireActivity(), InfoJobActivity.class);
+        intent.putExtra("isMenu", 1);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("job", job);
+        intent.putExtra("bundle", bundle);
+        startActivity(intent);
+    }
 
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-
-                requestTrashNotes();
-            }
+    @Override
+    public void getListIdProject(List<String> idProjectList) {
+        for (String id : idProjectList) {
+            trashFragmentManager.getAllJobByIdProject(id);
         }
-
-        new DeleteAllTrashNotesTask().execute();
     }
 
     @Override
-    public void onNoteClicked(TrashNote trashNote, int position) {
-        // on trash note click event listener
-    }
-
-    @Override
-    public void onNoteLongClicked(TrashNote trashNote, int position) {
-        bundle.putSerializable("trash_note_data", trashNote);
-
-        TrashNoteActionsBottomSheetModal trashNoteActionsBottomSheetModal = new TrashNoteActionsBottomSheetModal();
-        trashNoteActionsBottomSheetModal.setArguments(bundle);
-        trashNoteActionsBottomSheetModal.setTargetFragment(this, 3);
-        trashNoteActionsBottomSheetModal.show(requireFragmentManager(), "TAG");
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        // restore note
-        if (resultCode == TrashNoteActionsBottomSheetModal.REQUEST_RESTORE_NOTE_CODE) {
-            requestTrashNotes();
-            Toast.makeText(getContext(), getString(R.string.note_restored), Toast.LENGTH_SHORT).show();
-        // delete note
-        } else if (resultCode == TrashNoteActionsBottomSheetModal.REQUEST_DELETE_NOTE_CODE) {
-            requestTrashNotes();
-            Toast.makeText(getContext(), getString(R.string.note_deleted_permanently), Toast.LENGTH_SHORT).show();
-        // discard note
-        } else if (resultCode == TrashNoteActionsBottomSheetModal.REQUEST_DISCARD_NOTE_CODE) {
-            Toast.makeText(getContext(), getString(R.string.note_discarded), Toast.LENGTH_SHORT).show();
-        }
+    public void getListJobsById(List<Job> jobList) {
+        jobsList.addAll(jobList);
+        jobAdapter.submitList(jobsList);
     }
 }

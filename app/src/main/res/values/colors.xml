@@ -5,6 +5,7 @@
     <!-- main colors, just change colorAccent -->
     <color name="colorPrimary">#ff0000</color>
     <color name="colorPrimaryDark">#ff0000</color>
+    <color name="color_yellow">#F6EC8F</color>
     <color name="colorBackgroundLight">#a9a9a9</color>
     <color name="color_white">#a9a9a9</color>
     <color name="color_light_white">#a9a9a9</color>

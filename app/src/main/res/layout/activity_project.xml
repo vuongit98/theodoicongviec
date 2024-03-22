@@ -34,6 +34,7 @@
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:layout_alignParentBottom="true"
             android:id="@+id/fbt_add"
+            android:src="@drawable/baseline_add_24"
             android:layout_alignParentEnd="true"
             android:layout_margin="10dp"
             android:layout_width="wrap_content"

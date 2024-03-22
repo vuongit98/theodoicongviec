@@ -1,5 +1,6 @@
 package com.theodoilamviec.Account;
 
+import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -14,12 +15,21 @@ public class Job implements Parcelable {
     private Long timeEndDate ;
     private int highPriority;
     private String idProject ;
+    private boolean isDeleted = false;
 
     private int statusJob = 0 ; // new:0 , responsing: 1 ,finished: 2, unfinished: 3
     public Job() {
     }
 
-    public Job(String idJob, String nameJob, Long timeStartDate, Long timeEndDate, int highPriority, String idProject, int statusJob) {
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
+
+    public Job(String idJob, String nameJob, Long timeStartDate, Long timeEndDate, int highPriority, String idProject, int statusJob, boolean isDeleted) {
         this.idJob = idJob;
         this.nameJob = nameJob;
         this.timeStartDate = timeStartDate;
@@ -27,17 +37,8 @@ public class Job implements Parcelable {
         this.highPriority = highPriority;
         this.idProject = idProject;
         this.statusJob = statusJob;
+        this.isDeleted = isDeleted;
     }
-
-    public Job(String idJob, String nameJob, Long timeStartDate, Long timeEndDate, int highPriority, String idProject) {
-        this.idJob = idJob;
-        this.nameJob = nameJob;
-        this.timeStartDate = timeStartDate;
-        this.timeEndDate = timeEndDate;
-        this.highPriority = highPriority;
-        this.idProject = idProject;
-    }
-
 
     protected Job(Parcel in) {
         idJob = in.readString();
@@ -55,6 +56,9 @@ public class Job implements Parcelable {
         highPriority = in.readInt();
         idProject = in.readString();
         statusJob = in.readInt();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            isDeleted = in.readBoolean();
+        }
     }
 
     @Override
@@ -76,6 +80,11 @@ public class Job implements Parcelable {
         dest.writeInt(highPriority);
         dest.writeString(idProject);
         dest.writeInt(statusJob);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            dest.writeBoolean(isDeleted);
+        }else {
+            dest.writeInt(0);
+        }
     }
 
     @Override
@@ -101,14 +110,6 @@ public class Job implements Parcelable {
 
     public void setIdProject(String idProject) {
         this.idProject = idProject;
-    }
-
-    public Job(String idJob, String nameJob, Long timeStartDate, Long timeEndDate, int highPriority) {
-        this.idJob = idJob;
-        this.nameJob = nameJob;
-        this.timeStartDate = timeStartDate;
-        this.timeEndDate = timeEndDate;
-        this.highPriority = highPriority;
     }
 
     public String getIdJob() {

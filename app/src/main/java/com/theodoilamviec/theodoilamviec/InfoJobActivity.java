@@ -1,13 +1,17 @@
 package com.theodoilamviec.theodoilamviec;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
@@ -15,20 +19,27 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.theodoilamviec.Account.DB.APP_DATABASE;
 import com.theodoilamviec.Account.Job;
 import com.theodoilamviec.Account.JobDocument;
 import com.theodoilamviec.Account.JobUser;
 import com.theodoilamviec.Account.PermissionJob;
+import com.theodoilamviec.Account.PermissionProject;
+import com.theodoilamviec.Account.User;
 import com.theodoilamviec.Account.adapters.FileAttachedAdapter;
+import com.theodoilamviec.Account.adapters.PersonGroupAdapter;
 import com.theodoilamviec.Account.adapters.ProjectActivity;
 import com.theodoilamviec.theodoilamviec.Menu.HomeActivity;
 import com.theodoilamviec.theodoilamviec.databinding.ActivityInfoJobBinding;
+import com.theodoilamviec.theodoilamviec.databinding.ItemDialogPersonListBinding;
 import com.theodoilamviec.theodoilamviec.utils.GridSpacingItemDecoration;
 
 import java.util.ArrayList;
@@ -37,9 +48,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
-public class InfoJobActivity extends AppCompatActivity implements FileAttachedAdapter.IClickFileAttached {
-
+public class InfoJobActivity extends AppCompatActivity implements FileAttachedAdapter.IClickFileAttached, PersonGroupAdapter.IClickPersonItem {
     ActivityInfoJobBinding binding;
     Job job;
     String uidCurrent = FirebaseAuth.getInstance().getUid();
@@ -48,20 +59,23 @@ public class InfoJobActivity extends AppCompatActivity implements FileAttachedAd
     List<JobDocument> jobDocumentsList = new ArrayList<>();
     List<JobDocument> previousJobDocumentsList = new ArrayList<>();
     List<String> uidPermissionList = new ArrayList<>();
+    List<User> userChooseList = new ArrayList<>();
 
+    Dialog dialog;
     FileAttachedAdapter fileAttachedAdapter;
+    PersonGroupAdapter personGroupAdapter;
+    List<User> usersList = new ArrayList<>();
+    List<String> usersInGroupList = new ArrayList<>();
 
     int permissionEdit = 0;
     Long timeStartPicker = 0L;
     Long timeEndPicker = 0L;
     int highPriority = 0;
-    int statusJob = 0;
+    int statusJob = -1;
     String[] priorityList = new String[]{"New", "Medium", "Urgent"};
     String[] statusJobList = new String[]{"New", "Responding", "Finished"};
-
-
+    int isMenu = -1;
     Calendar calendar;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +84,10 @@ public class InfoJobActivity extends AppCompatActivity implements FileAttachedAd
         Intent intent = getIntent();
         fileAttachedAdapter = new FileAttachedAdapter(this, this);
         fileAttachedAdapter.setShowFullScreen(true);
-        Bundle bundle = intent.getExtras();
+        isMenu = intent.getIntExtra("isMenu", -1);
+        System.out.println("onCreate = "+ isMenu);
+
+        Bundle bundle = intent.getBundleExtra("bundle");
         if (bundle != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 job = bundle.getParcelable("job", Job.class);
@@ -151,10 +168,29 @@ public class InfoJobActivity extends AppCompatActivity implements FileAttachedAd
             showDialogTime(false);
 
         });
-
+        binding.ivAttachPeople.setOnClickListener(e -> {
+            showDialog();
+            getListPerson();
+        });
         binding.rcvFileAttached.setLayoutManager(new GridLayoutManager(this, 2));
         binding.rcvFileAttached.addItemDecoration(new GridSpacingItemDecoration(2, 10, true));
         binding.rcvFileAttached.setAdapter(fileAttachedAdapter);
+
+    }
+
+    public void showDialog() {
+        dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        ItemDialogPersonListBinding binding1 = ItemDialogPersonListBinding.inflate(getLayoutInflater());
+        dialog.setContentView(binding1.getRoot());
+        personGroupAdapter = new PersonGroupAdapter(this);
+
+        Window window = dialog.getWindow();
+        if (window == null) return;
+        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        binding1.rcvPerson.setAdapter(personGroupAdapter);
+        binding1.rcvPerson.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
 
     }
 
@@ -197,6 +233,8 @@ public class InfoJobActivity extends AppCompatActivity implements FileAttachedAd
                                     previousJobUsersList.add(jobUser);
                                     String nameUser = jobUser.getUser().getUserName();
                                     stringUserList.add(nameUser.substring(0, nameUser.indexOf("@gmail")));
+                                    userChooseList.add(jobUser.getUser());
+                                    usersInGroupList.add(nameUser.substring(0, nameUser.indexOf("@gmail")));
                                 }
                             }
                             String usersList = String.join(", ", stringUserList);
@@ -266,8 +304,10 @@ public class InfoJobActivity extends AppCompatActivity implements FileAttachedAd
 
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
-        getMenuInflater().inflate(R.menu.item_right_toolbar, menu);
-
+        System.out.println("onCreateOptionsMenu = "+ isMenu);
+        if (isMenu == -1) {
+            getMenuInflater().inflate(R.menu.item_right_toolbar, menu);
+        }
         return true;
     }
 
@@ -275,9 +315,21 @@ public class InfoJobActivity extends AppCompatActivity implements FileAttachedAd
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.delete_job) {
             if (uidPermissionList.contains(uidCurrent)) {
-                deleteJob(job.getIdJob());
-                startActivity(new Intent(InfoJobActivity.this, HomeActivity.class));
-                finish();
+                AlertDialog alertDialog = new AlertDialog.Builder(this)
+                        .setTitle("Xóa thông tin")
+                        .setMessage("Bạn có muốn xóa công việc không?").
+                        setNegativeButton("Cancel", (dialog, which) -> {
+                            dialog.dismiss();
+                        }).setPositiveButton("Ok", (dialog, which) -> {
+                            deleteJob(job.getIdJob());
+                            dialog.dismiss();
+                            Intent intent = new Intent(InfoJobActivity.this, HomeActivity.class);
+                            intent.putExtra("id_project", job.getIdProject());
+                            startActivity(intent);
+                            finish();
+                        }).create();
+                alertDialog.show();
+
             } else {
                 Toast.makeText(this, "Không có quyền xóa.", Toast.LENGTH_SHORT).show();
             }
@@ -300,10 +352,11 @@ public class InfoJobActivity extends AppCompatActivity implements FileAttachedAd
                     Toast.makeText(this, "Không có quyền chỉnh sửa", Toast.LENGTH_SHORT).show();
                 }
             } else {
+
                 job.setNameJob(binding.edtNameJob.getText().toString().trim());
                 job.setHighPriority(highPriority);
-                job.setTimeStartDate(timeStartPicker);
-                job.setTimeEndDate(timeEndPicker);
+                job.setTimeStartDate(timeStartPicker == 0 ? job.getTimeStartDate() : timeStartPicker);
+                job.setTimeEndDate(timeEndPicker == 0 ? job.getTimeEndDate() : timeEndPicker);
                 job.setStatusJob(statusJob);
                 saveJob(job);
                 item.setIcon(R.drawable.baseline_edit_24);
@@ -314,9 +367,7 @@ public class InfoJobActivity extends AppCompatActivity implements FileAttachedAd
     }
 
     void deleteJob(String idJob) {
-        FirebaseDatabase.getInstance().getReference("JobUsers").child(job.getIdProject()).child(idJob).removeValue();
-        FirebaseDatabase.getInstance().getReference("JobDocuments").child(job.getIdProject()).child(idJob).removeValue();
-        FirebaseDatabase.getInstance().getReference("Jobs").child(job.getIdProject()).child(idJob).removeValue();
+        FirebaseDatabase.getInstance().getReference("Jobs").child(job.getIdProject()).child(idJob).child("deleted").setValue(true);
     }
 
     void saveJob(Job job) {
@@ -345,6 +396,28 @@ public class InfoJobActivity extends AppCompatActivity implements FileAttachedAd
                         .child(jobUser.getIdJobUser()).setValue(jobUser);
             }
         }
+        setPermissionProject(job.getIdProject());
+        APP_DATABASE.requestDatabase(this).dao().updateJobNotificationLocal(
+                job.getIdJob(), job.getIdProject(), timeEndPicker
+        );
+    }
+
+    public void setPermissionProject(String idProject) {
+
+        for (User userInfo : userChooseList) {
+            PermissionProject project = new PermissionProject(
+                    String.valueOf(System.currentTimeMillis()),
+                    userInfo.getUid(),
+                    idProject
+            );
+            FirebaseDatabase.getInstance().getReference("PermissionProject")
+                    .child(userInfo.getUid())
+                    .child(idProject)
+                    .setValue(project);
+
+
+        }
+
     }
 
     @Override
@@ -356,5 +429,52 @@ public class InfoJobActivity extends AppCompatActivity implements FileAttachedAd
     @Override
     public void getFile(JobDocument jobDocument) {
 
+    }
+
+    public void getListPerson() {
+        FirebaseDatabase.getInstance().getReference("Users")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists() && snapshot.hasChildren()) {
+                            usersList.clear();
+                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                User user = dataSnapshot.getValue(User.class);
+
+                                if (Objects.requireNonNull(user).getUid().equals(FirebaseAuth.getInstance().getUid())) {
+                                    continue;
+                                }
+                                if (usersInGroupList.contains(user.getUid())) {
+                                    continue;
+                                }
+
+                                usersList.add(user);
+
+                            }
+                            if (!usersList.isEmpty()) {
+                                personGroupAdapter.submitList(usersList);
+                                if (dialog != null) {
+                                    dialog.show();
+                                }
+                            } else {
+                                Toast.makeText(InfoJobActivity.this, "Mọi người đã được thêm hết!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+    }
+
+    @Override
+    public void getPerson(User user) {
+        userChooseList.remove(user);
+        userChooseList.add(user);
+        List<String> listNameString = userChooseList.stream().map(it -> it.getUserName().substring(0, it.getUserName().indexOf("@gmail"))).collect(Collectors.toList());
+        String data = String.join(", ", listNameString);
+        binding.tvNamePerson.setText(data);
     }
 }

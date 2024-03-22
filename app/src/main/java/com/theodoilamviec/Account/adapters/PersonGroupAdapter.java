@@ -54,7 +54,8 @@ public class PersonGroupAdapter extends RecyclerView.Adapter<PersonGroupAdapter.
             binding = itemView;
         }
         public void setPerson(User user, IClickPersonItem item){
-            binding.tvPerson.setText(user.getUserName());
+            String userName = user.getUserName();
+            binding.tvPerson.setText(userName.substring(0, userName.indexOf("@gmail.com")));
             binding.btnAdd.setOnClickListener(e -> item.getPerson(user));
         }
     }

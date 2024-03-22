@@ -217,7 +217,7 @@ public class CreateJobPersonActivity extends AppCompatActivity implements
 
         binding.btnAdd.setOnClickListener(e -> {
             String nameJob = binding.edtNameJob.getText().toString().trim();
-            Job job = new Job(idJob, nameJob, startTime, endTime, highPriority, idProject, statusJob);
+            Job job = new Job(idJob, nameJob, startTime, endTime, highPriority, idProject, statusJob, false);
             setJob(job);
 
             String idPermissions = String.valueOf(System.currentTimeMillis());
@@ -500,6 +500,10 @@ public class CreateJobPersonActivity extends AppCompatActivity implements
 
     @Override
     public void getPerson(User user) {
+        usersList.remove(user);
+        personGroupAdapter.submitList(usersList);
+
+        usersInGroupList.add(user.getUid());
         userChooseList.add(user);
         List<String> listNameString = userChooseList.stream().map(it -> it.getUserName().substring(0, it.getUserName().indexOf("@gmail"))).collect(Collectors.toList());
         String data = String.join(", ", listNameString);

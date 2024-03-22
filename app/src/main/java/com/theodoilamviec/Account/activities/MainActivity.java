@@ -17,6 +17,7 @@ import com.theodoilamviec.Account.JobUserLocal;
 import com.theodoilamviec.Account.PermissionJob;
 import com.theodoilamviec.Account.PermissionJobLocal;
 import com.theodoilamviec.Account.StaticJobActivity;
+import com.theodoilamviec.Account.TimeJobActivity;
 import com.theodoilamviec.Account.adapters.ProjectActivity;
 import com.theodoilamviec.ISyncData;
 import com.theodoilamviec.Project;
@@ -62,8 +63,7 @@ public class MainActivity extends AppCompatActivity implements ISyncData {
         mainBinding.tiendo.setOnClickListener(e -> startActivity(new Intent(MainActivity.this, StaticJobActivity.class)));
 
         mainBinding.dongbo.setOnClickListener(e -> {
-            syncDataManager.syncDataProjects();
-
+            startActivity(new Intent(MainActivity.this, TimeJobActivity.class));
         });
     }
 

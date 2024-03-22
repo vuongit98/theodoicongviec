@@ -15,7 +15,9 @@
         android:textStyle="bold" />
 
     <EditText
-
+        android:background="@drawable/custom_common_edittext"
+        android:paddingVertical="10dp"
+        android:paddingHorizontal="10dp"
         android:id="@+id/edt_name_project"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -31,6 +33,9 @@
         android:orientation="horizontal">
 
         <androidx.appcompat.widget.AppCompatButton
+            android:background="@drawable/custom_btn_cancel"
+            android:textColor="@color/color_alert_alpha"
+
             android:id="@+id/btn_cancel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -39,6 +44,9 @@
             android:text="Cancel" />
 
         <androidx.appcompat.widget.AppCompatButton
+            android:background="@drawable/custom_btn_ok"
+            android:textColor="@color/color_alert_alpha"
+
             android:id="@+id/btn_ok"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

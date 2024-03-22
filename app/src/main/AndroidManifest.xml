@@ -6,7 +6,7 @@
         android:name="android.hardware.camera"
         android:required="false" />
 
-    <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -36,6 +36,9 @@
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name="com.theodoilamviec.Account.TimeJobActivity"
+            android:exported="false" />
         <activity
             android:name="com.theodoilamviec.Account.AccessProjectActivity"
             android:exported="false" />
@@ -108,7 +111,7 @@
         </provider>
 
         <receiver android:name=".models.ReminderReceiver" />
-        <receiver android:name="com.theodoilamviec.BroadcastReminder"/>
+        <receiver android:name="com.theodoilamviec.BroadcastReminder" />
 
         <service android:name="com.theodoilamviec.service.BackgroundNotificationService" />
         <service

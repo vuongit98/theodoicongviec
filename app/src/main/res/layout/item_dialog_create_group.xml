@@ -7,6 +7,7 @@
     <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="match_parent"
         android:text="Tạo nhóm"
+        android:textColor="@color/reverse_dark"
         android:textAlignment="center"
         android:padding="10dp"
         android:textSize="20sp"
@@ -14,6 +15,10 @@
         android:layout_height="wrap_content"/>
 
     <EditText
+        android:textColor="@color/reverse_dark"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="10dp"
+        android:background="@drawable/custom_common_edittext"
         android:id="@+id/edt_group"
         android:hint="Tên nhóm"
         android:layout_marginHorizontal="10dp"
@@ -22,6 +27,8 @@
     
     
     <androidx.appcompat.widget.AppCompatButton
+        android:background="@drawable/custom_btn_ok"
+        android:textColor="@color/color_alert_alpha"
         android:id="@+id/btn_create"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"

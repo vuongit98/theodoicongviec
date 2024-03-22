@@ -4,13 +4,11 @@
     <item
         android:id="@+id/edit_job"
         android:icon="@drawable/baseline_edit_24"
-        android:iconTint="@color/color_white"
         android:title="Edit"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/delete_job"
-        android:icon="@drawable/delete"
-        android:iconTint="@color/color_white"
+        android:icon="@drawable/baseline_delete_24"
         android:title="Delete"
         app:showAsAction="ifRoom" />
 </menu>

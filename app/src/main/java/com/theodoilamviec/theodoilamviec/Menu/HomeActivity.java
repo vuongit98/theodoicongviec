@@ -29,10 +29,10 @@ import java.util.List;
 import java.util.Objects;
 
 
-public class HomeActivity  extends AppCompatActivity implements JobAdapter.IClickJob {
+public class HomeActivity extends AppCompatActivity implements JobAdapter.IClickJob {
     int sort = 0;
-    JobAdapter jobAdapter ;
-    ActivityHomeBinding binding ;
+    JobAdapter jobAdapter;
+    ActivityHomeBinding binding;
 
     List<Job> jobsList = new ArrayList<>();
     String idProject = "";
@@ -47,8 +47,6 @@ public class HomeActivity  extends AppCompatActivity implements JobAdapter.IClic
         Intent intent = getIntent();
 
         idProject = intent.getStringExtra("id_project");
-
-
         jobAdapter = new JobAdapter(this);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
@@ -56,7 +54,7 @@ public class HomeActivity  extends AppCompatActivity implements JobAdapter.IClic
         toolbar.setNavigationOnClickListener(v -> startActivity(new Intent(HomeActivity.this, ProjectActivity.class)));
 
         binding.rcvProject.setLayoutManager(new GridLayoutManager(this, 2));
-        binding.rcvProject.addItemDecoration(new GridSpacingItemDecoration(2,10,true));
+        binding.rcvProject.addItemDecoration(new GridSpacingItemDecoration(2, 10, true));
         binding.rcvProject.setAdapter(jobAdapter);
         getJobsList();
 
@@ -67,41 +65,45 @@ public class HomeActivity  extends AppCompatActivity implements JobAdapter.IClic
         });
 
     }
+
     public void getJobsList() {
         FirebaseDatabase.getInstance().getReference("Jobs")
                 .child(idProject)
                 .addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists() && snapshot.hasChildren()) {
-                    binding.progressBar.setVisibility(View.VISIBLE);
-                    jobsList.clear();
-                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                        Job job = dataSnapshot.getValue(Job.class);
-                        if (job != null) {
-                            jobsList.add(job);
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists() && snapshot.hasChildren()) {
+                            binding.progressBar.setVisibility(View.VISIBLE);
+                            jobsList.clear();
+                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                Job job = dataSnapshot.getValue(Job.class);
+                                if (job != null) {
+                                    if (!job.isDeleted()) {
+                                        jobsList.add(job);
+                                    }
+                                }
+                            }
+                            jobAdapter.submitList(jobsList);
+                            binding.progressBar.setVisibility(View.GONE);
+                        } else {
+                            binding.progressBar.setVisibility(View.GONE);
                         }
                     }
-                    jobAdapter.submitList(jobsList);
-                    binding.progressBar.setVisibility(View.GONE);
-                }else {
-                    binding.progressBar.setVisibility(View.GONE);
-                }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("onCancelled: ", "Error = " + error.getMessage());
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.e("onCancelled: ", "Error = " + error.getMessage());
 
-            }
-        });
+                    }
+                });
     }
+
     @Override
     public void getJob(Job job) {
         Intent intentJob = new Intent(this, InfoJobActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable("job", job);
-        intentJob.putExtras(bundle);
+        intentJob.putExtra("bundle",bundle);
         startActivity(intentJob);
     }
 }

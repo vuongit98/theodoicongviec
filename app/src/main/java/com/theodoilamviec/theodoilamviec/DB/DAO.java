@@ -5,6 +5,7 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import com.theodoilamviec.Account.JobDocument;
 import com.theodoilamviec.Account.JobDocumentLocal;
@@ -135,6 +136,13 @@ public interface DAO {
     void request_delete_all_trash_note();
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertJobNotificationLocal(JobNotificationLocal jobNotification);
+
+    @Query("UPDATE JobNotificationLocal SET timeEnd = :timeEnd WHERE idJob = :idJob AND idProject = :idProject")
+    void updateJobNotificationLocal(String idJob, String idProject, Long timeEnd);
+
+    @Query("DELETE FROM JobNotificationLocal WHERE idJob = :idJob AND idProject = :idProject")
+    void deleteJobNotificationLocal(String idJob, String idProject);
+
 
     @Query("SELECT * FROM JobNotificationLocal ")
     List<JobNotificationLocal> requestAllJobNotificationLocal();
