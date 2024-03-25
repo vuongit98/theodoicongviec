@@ -15,6 +15,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.theodoilamviec.Account.Job;
 import com.theodoilamviec.Account.JobNotificationLocal;
+import com.theodoilamviec.Account.TempNotificationObject;
 import com.theodoilamviec.Account.listeners.NotificationListener;
 import com.theodoilamviec.theodoilamviec.R;
 import com.theodoilamviec.Account.adapters.NotificationsAdapter;
@@ -36,7 +37,7 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
     private final List<Job> jobsList = new ArrayList<>();
     private final List<JobNotificationLocal> jobNotifications = new ArrayList<>();
 
-    private final List<String> listNotifications = new ArrayList<>();
+    private final List<TempNotificationObject> listNotifications = new ArrayList<>();
     private DAO dao;
 
     @SuppressLint({"SetTextI18n", "NotifyDataSetChanged"})
@@ -88,29 +89,31 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                        if (snapshot.exists() && snapshot.hasChildren()){
+                        if (snapshot.exists() && snapshot.hasChildren()) {
 
                             for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                if (dataSnapshot.getKey() == null ) continue;
+                                if (dataSnapshot.getKey() == null) continue;
                                 FirebaseDatabase.getInstance().getReference("Notifications")
                                         .child(dataSnapshot.getKey())
                                         .addValueEventListener(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                if (snapshot.exists()){
-                                                    Object data = snapshot.getValue();
-                                                    if (data != null){
-
-                                                        if (data instanceof HashMap) {
-                                                            Map.Entry<String,String> entry = (Map.Entry<String, String>) ((HashMap<?, ?>) data).entrySet().iterator().next();
-                                                            String key = entry.getKey();
-                                                            String value = entry.getValue();
-                                                            listNotifications.add(value);
-                                                            adapter.submitList(listNotifications);
-
+                                                if (snapshot.exists() && snapshot.hasChildren()) {
+                                                    listNotifications.clear();
+                                                    for (DataSnapshot dataSnapshot1 : snapshot.getChildren()) {
+                                                        try {
+                                                            TempNotificationObject tempNotificationObject = dataSnapshot1.getValue(TempNotificationObject.class);
+                                                            if (tempNotificationObject != null) {
+                                                                listNotifications.add(tempNotificationObject);
+                                                            }
+                                                        } catch (Exception e) {
+                                                            System.out.println("e = " + e.getMessage());
                                                         }
                                                     }
+                                                    adapter.submitList(listNotifications);
+
                                                 }
+
                                             }
 
                                             @Override
@@ -128,8 +131,9 @@ public class NotificationsActivity extends AppCompatActivity implements Notifica
                     }
                 });
     }
+
     @Override
-    public void onNotificationClicked(String notification, int position) {
+    public void onNotificationClicked(TempNotificationObject notification, int position) {
 
     }
 }

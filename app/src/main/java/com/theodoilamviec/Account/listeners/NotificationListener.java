@@ -1,7 +1,8 @@
 package com.theodoilamviec.Account.listeners;
 
 import com.theodoilamviec.Account.JobNotificationLocal;
+import com.theodoilamviec.Account.TempNotificationObject;
 
 public interface NotificationListener {
-    void onNotificationClicked(String notification, int position);
+    void onNotificationClicked(TempNotificationObject notification, int position);
 }

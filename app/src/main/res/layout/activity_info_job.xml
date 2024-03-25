@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
-        app:menu="@menu/item_right_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimaryDark" />
+        android:background="@color/colorPrimaryDark"
+        app:menu="@menu/item_right_toolbar" />
 
     <ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
@@ -28,11 +28,30 @@
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="10dp"
                 android:autofillHints=""
+                android:background="@drawable/custom_common_edittext"
                 android:hint="Tên công việc"
                 android:inputType="text"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="10dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/edt_description_job"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/custom_common_edittext"
+                android:hint="Mô tả công việc"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="10dp"
+                android:textColor="@color/reverse_dark"
+                android:textColorHint="@color/reverse_dark"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/edt_name_job" />
 
             <TextView
                 android:id="@+id/tv_start_date"
@@ -44,7 +63,7 @@
                 android:textColor="@color/color_dark"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/edt_name_job" />
+                app:layout_constraintTop_toBottomOf="@id/edt_description_job" />
 
             <LinearLayout
                 android:id="@+id/layout_start_date"
@@ -75,7 +94,7 @@
                 android:textColor="@color/color_dark"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/edt_name_job" />
+                app:layout_constraintTop_toBottomOf="@id/edt_description_job" />
 
             <LinearLayout
                 android:id="@+id/layout_end_date"
@@ -118,6 +137,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="10dp" />
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/layout_status_job"
                 android:layout_width="match_parent"
@@ -140,6 +160,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="10dp" />
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/layout_attach"
                 android:layout_width="match_parent"
@@ -190,6 +211,33 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/layout_link_meeting"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/layout_people">
+
+                <TextView
+                    android:id="@+id/tv_link_meeting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Link meeting: "
+                    android:textColor="@color/reverse_dark" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:padding="10dp"
+                    android:id="@+id/tv_link_meeting_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:ellipsize="end" />
+
+            </LinearLayout>
+
             <TextView
                 android:id="@+id/tv_name_person_title"
                 android:layout_width="match_parent"
@@ -201,7 +249,7 @@
                 android:textStyle="bold|italic"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/layout_people" />
+                app:layout_constraintTop_toBottomOf="@id/layout_link_meeting" />
 
             <TextView
                 android:id="@+id/tv_name_person"
@@ -213,23 +261,25 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_name_person_title" />
+
             <LinearLayout
-                android:padding="5dp"
+                android:id="@+id/layout_background"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
+                android:orientation="horizontal"
+                android:padding="5dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_name_person"
-                android:id="@+id/layout_background"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 tools:ignore="UseCompoundDrawables">
+
                 <TextView
-                    android:layout_gravity="center_vertical"
-                    android:text="Hình nền"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:padding="10dp"
+                    android:text="Hình nền"
                     android:textStyle="italic"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -237,11 +287,11 @@
 
                 <ImageView
                     android:id="@+id/img_bg"
-                    android:src="@drawable/image"
-                    android:layout_marginStart="10dp"
-                    android:layout_gravity="center_horizontal"
                     android:layout_width="100dp"
-                    android:layout_height="100dp"/>
+                    android:layout_height="100dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginStart="10dp"
+                    android:src="@drawable/image" />
 
             </LinearLayout>
 

@@ -16,7 +16,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.theodoilamviec.theodoilamviec.DB.APP_DATABASE;
 import com.theodoilamviec.theodoilamviec.R;
 
+import java.util.HashMap;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class BroadcastReminder extends BroadcastReceiver {
     @Override
@@ -26,27 +28,33 @@ public class BroadcastReminder extends BroadcastReceiver {
         String nameProject = intent.getStringExtra("name_project");
         String idProject = intent.getStringExtra("id_project");
         String idJob = intent.getStringExtra("id_job");
+        String nameJob = intent.getStringExtra("name_job");
+        String contentJob = intent.getStringExtra("content_job");
 
-
+        HashMap<String, String > notificationTest = new HashMap<>();
+        notificationTest.put("nameJob", nameJob);
+        notificationTest.put("contentJob", contentJob);
         if (notification != null && notification.equals("1")) {
-            showNotification(nameProject, idProject, idJob, context);
+            showNotification(notificationTest, idProject, idJob, context);
         }
     }
 
-    void showNotification(String title, String idProject, String idJob, Context context) {
+    void showNotification(HashMap<String, String> data , String idProject, String idJob, Context context) {
 
+        String nameProject = data.get("nameJob");
+        String valueJob =data.get("contentJob");
         FirebaseDatabase.getInstance().getReference("Notifications")
                 .child(idProject)
                 .child(idJob)
-                .setValue(title);
+                .setValue(data);
 
         APP_DATABASE.requestDatabase(context).dao().deleteJobNotificationLocalById(idProject, idJob);
 
         // Build the notification and add the action.
         Notification newMessageNotification = new Notification.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.iconthongbao)
-                .setContentTitle(title)
-                .setContentText("Đã đến ngày deadline!")
+                .setContentTitle(nameProject)
+                .setContentText(valueJob + " đã đến ngày deadline!")
                 .build();
 
         // Issue the notification.

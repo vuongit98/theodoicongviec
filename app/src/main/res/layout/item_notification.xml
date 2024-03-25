@@ -31,6 +31,13 @@
             android:textColor="?color_dark"
             android:textStyle="bold"
             android:textSize="14sp" />
+        <TextView
+            android:id="@+id/content_notification_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="?color_dark"
+            android:textStyle="bold"
+            android:textSize="14sp" />
 
     </LinearLayout>
 

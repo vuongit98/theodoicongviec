@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.theodoilamviec.Account.JobNotificationLocal;
+import com.theodoilamviec.Account.TempNotificationObject;
 import com.theodoilamviec.Account.listeners.NotificationListener;
 import com.theodoilamviec.theodoilamviec.databinding.ItemNotificationBinding;
 
@@ -17,7 +18,7 @@ import java.util.List;
 
 public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdapter.NotificationViewHolder> {
 
-    private final List<String> notificationsJobList = new ArrayList<>();
+    private final List<TempNotificationObject> notificationsJobList = new ArrayList<>();
     private final NotificationListener notificationListener;
 
     public NotificationsAdapter( NotificationListener notificationListener) {
@@ -25,7 +26,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void submitList(List<String> jobNotifications) {
+    public void submitList(List<TempNotificationObject> jobNotifications) {
         notificationsJobList.clear();
         notificationsJobList.addAll(jobNotifications);
         notifyDataSetChanged();
@@ -60,8 +61,9 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
             binding = notification;
         }
 
-        void set_notification(String data, int position, NotificationListener notificationListener) {
-            binding.notificationTitle.setText(data);
+        void set_notification(TempNotificationObject data, int position, NotificationListener notificationListener) {
+            binding.notificationTitle.setText(data.nameJob);
+            binding.contentNotificationTitle.setText(data.contentJob);
             binding.itemNotificationLayout.setOnClickListener(v -> notificationListener
                     .onNotificationClicked(data, position));
         }

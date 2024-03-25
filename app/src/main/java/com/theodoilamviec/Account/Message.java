@@ -5,6 +5,7 @@ public class Message {
     private String nameSentMessage;
     private String idMessage;
     private String message;
+    private int typeMessage ;
     private Long timeSent;
 
     public Message() {
@@ -16,6 +17,14 @@ public class Message {
 
     public void setNameSentMessage(String nameSentMessage) {
         this.nameSentMessage = nameSentMessage;
+    }
+
+    public int getTypeMessage() {
+        return typeMessage;
+    }
+
+    public void setTypeMessage(int typeMessage) {
+        this.typeMessage = typeMessage;
     }
 
     public Message(String uidSentMessage, String nameSentMessage, String idMessage, String message, Long timeSent) {

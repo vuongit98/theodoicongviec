@@ -12,6 +12,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.google.android.exoplayer2.C;
 import com.theodoilamviec.Account.Job;
 import com.theodoilamviec.Account.JobNotificationLocal;
 import com.theodoilamviec.Account.adapters.ReminderNotesAdapter;
@@ -22,8 +23,11 @@ import com.theodoilamviec.theodoilamviec.DB.APP_DATABASE;
 import com.theodoilamviec.theodoilamviec.databinding.ActivityReminderBinding;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 public class ReminderActivity extends AppCompatActivity implements ReminderHandleData.IGetDataReminder, ReminderNotesAdapter.IClickReminderNotes {
 
@@ -90,10 +94,17 @@ public class ReminderActivity extends AppCompatActivity implements ReminderHandl
                     intent.putExtra("name_project", jobNotificationLocal.getNameJob());
                     intent.putExtra("id_project", jobNotificationLocal.getIdProject());
                     intent.putExtra("id_job", jobNotificationLocal.getIdJob());
+                    intent.putExtra("name_job", jobNotificationLocal.getNameJob());
+                    intent.putExtra("content_job", jobNotificationLocal.getContentJob());
 
                     PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+                    System.out.println(System.currentTimeMillis());
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(new Date(jobNotificationLocal.timeEnd));
+                    calendar.roll(Calendar.MONTH, -1);
 
-                    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,jobNotificationLocal.timeEnd,pendingIntent);
+                    System.out.println(calendar.getTimeInMillis() + " " + System.currentTimeMillis());
+                    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pendingIntent);
 
                     dialog.dismiss();
                 }).create();

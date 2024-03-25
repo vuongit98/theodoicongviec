@@ -185,6 +185,8 @@ public class InfoJobActivity extends AppCompatActivity implements FileAttachedAd
             timeJob = getTimeJob(calendar);
             String timeEnd = timeJob[2] + "/" + timeJob[1] + "/" + timeJob[0];
             binding.tvEndDatePicker.setText(timeEnd);
+            binding.edtDescriptionJob.setText(job.getContentJob());
+            binding.tvLinkMeeting1.setText(job.getLinkMeetingUrl());
             getListPermissionJobs(job.getIdJob());
             getJobUserById(job.getIdJob());
             getJobDocumentsById(job.getIdJob());
@@ -196,7 +198,14 @@ public class InfoJobActivity extends AppCompatActivity implements FileAttachedAd
             binding.spStatusJob.setEnabled(false);
             binding.ivAttachFile.setEnabled(false);
             binding.ivAttachPeople.setEnabled(false);
+            binding.edtDescriptionJob.setEnabled(false);
             binding.imgBg.setEnabled(false);
+            binding.tvLinkMeeting1.setOnClickListener(e -> {
+                String url = binding.tvLinkMeeting1.getText().toString().trim();
+                if (!url.isEmpty()){
+                    openUrl(url);
+                }
+            });
 
         }
 
@@ -223,6 +232,11 @@ public class InfoJobActivity extends AppCompatActivity implements FileAttachedAd
                     .build());
         });
 
+    }
+
+    private void openUrl(String url) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        startActivity(intent);
     }
 
     public void showDialog() {
@@ -393,6 +407,7 @@ public class InfoJobActivity extends AppCompatActivity implements FileAttachedAd
                     binding.spStatusJob.setEnabled(true);
                     binding.ivAttachFile.setEnabled(true);
                     binding.ivAttachPeople.setEnabled(true);
+                    binding.edtDescriptionJob.setEnabled(true);
                     binding.imgBg.setEnabled(true);
 
 
@@ -401,13 +416,14 @@ public class InfoJobActivity extends AppCompatActivity implements FileAttachedAd
                     Toast.makeText(this, "Không có quyền chỉnh sửa", Toast.LENGTH_SHORT).show();
                 }
             } else {
-
+                job.setContentJob(binding.edtDescriptionJob.getText().toString().trim());
                 job.setNameJob(binding.edtNameJob.getText().toString().trim());
                 job.setHighPriority(highPriority);
                 job.setTimeStartDate(timeStartPicker == 0 ? job.getTimeStartDate() : timeStartPicker);
                 job.setTimeEndDate(timeEndPicker == 0 ? job.getTimeEndDate() : timeEndPicker);
                 job.setStatusJob(statusJob);
                 job.setUrlImage(urlImageJob.isEmpty() ? job.getUrlImage() : urlImageJob);
+
                 saveJob(job);
                 item.setIcon(R.drawable.baseline_edit_24);
                 permissionEdit = 0;

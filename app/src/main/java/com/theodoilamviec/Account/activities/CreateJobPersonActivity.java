@@ -240,7 +240,9 @@ public class CreateJobPersonActivity extends AppCompatActivity implements
 
         binding.btnAdd.setOnClickListener(e -> {
             String nameJob = binding.edtNameJob.getText().toString().trim();
-            Job job = new Job(idJob, nameJob, startTime, endTime, highPriority, idProject, statusJob, false, urlImageJob);
+            String contentJob = binding.edtDescriptionJob.getText().toString().trim();
+            String linkUrl = binding.edtLinkMeeting.getText().toString().trim();
+            Job job = new Job(idJob, nameJob, startTime, endTime, highPriority, idProject, statusJob, false, urlImageJob, contentJob,linkUrl);
             setJob(job);
 
             String idPermissions = String.valueOf(System.currentTimeMillis());
@@ -278,14 +280,17 @@ public class CreateJobPersonActivity extends AppCompatActivity implements
             personGroupAdapter.submitList(new ArrayList<>());
             fileAttachedAdapter.submitList(new ArrayList<>());
 
-            APP_DATABASE.requestDatabase(this).dao().insertJobNotificationLocal(new
+            JobNotificationLocal jobNotificationLocal1 = new
                     JobNotificationLocal(
                     FirebaseAuth.getInstance().getUid(),
                     idJob,
                     idProject,
                     nameJob,
-                    endTime
-            ));
+                    endTime,
+                    contentJob
+            );
+            jobNotificationLocal1.setContentJob(job.getContentJob());
+            APP_DATABASE.requestDatabase(this).dao().insertJobNotificationLocal(jobNotificationLocal1);
 
             Toast.makeText(this, "Tạo công việc thành công ", Toast.LENGTH_SHORT).show();
             finish();

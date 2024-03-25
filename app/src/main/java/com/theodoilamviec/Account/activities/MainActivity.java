@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity implements ISyncData {
+public class MainActivity extends AppCompatActivity {
 
     // Drawer Layout
 
@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity implements ISyncData {
         mainBinding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(mainBinding.getRoot());
         dao = APP_DATABASE.requestDatabase(this).dao();
-        syncDataManager = new SyncDataManager(this);
 
         mainBinding.ghichu.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, ProjectActivity.class)));
         mainBinding.thungrac.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, TrashActivity.class)));
@@ -63,101 +62,10 @@ public class MainActivity extends AppCompatActivity implements ISyncData {
         mainBinding.tiendo.setOnClickListener(e -> startActivity(new Intent(MainActivity.this, StaticJobActivity.class)));
 
         mainBinding.dongbo.setOnClickListener(e -> {
-            syncDataManager.syncDataProjects();
         });
 
         mainBinding.lichlamviec.setOnClickListener(e -> {
             startActivity(new Intent(MainActivity.this, TimeJobActivity.class));
         });
-    }
-
-
-    @Override
-    public void getSyncProject(List<Project> projectList) {
-        for (Project project : projectList) {
-            ProjectLocal projectLocal = new ProjectLocal(
-                    project.getIdProject(),
-                    project.getNameProject(),
-                    project.getNameCreator()
-            );
-            dao.insertProjects(projectLocal);
-        }
-        syncDataManager.syncDataJobs(projectList);
-        jobsList.clear();
-    }
-
-    @Override
-    public void getSyncJobs(List<Job> jobList) {
-        for (Job job : jobList) {
-            JobLocal jobLocal = new JobLocal(
-                    job.getIdJob(),
-                    job.getNameJob(),
-                    job.getTimeStartDate(),
-                    job.getTimeEndDate(),
-                    job.getHighPriority(),
-                    job.getIdProject(),
-                    job.getStatusJob()
-            );
-            dao.insertJobs(jobLocal);
-        }
-        jobsList.addAll(jobList);
-        syncDataManager.sysDataJobNotification(jobList);
-    }
-
-    @Override
-    public void getSyncJobNotifications(List<JobNotification> jobNotificationList) {
-        for (JobNotification jobNotification : jobNotificationList) {
-            JobNotificationLocal jobNotificationLocal = new JobNotificationLocal(
-                    "",
-                    jobNotification.getIdProject(),
-                    jobNotification.getJob().getNameJob(),
-                    jobNotification.getTimeEnd()
-            );
-            dao.insertJobNotifications(jobNotificationLocal);
-        }
-        syncDataManager.sysDataJobDocument(jobsList);
-    }
-
-    @Override
-    public void getSyncJobDocuments(List<JobDocument> jobDocumentsList) {
-        for (JobDocument jobDocument : jobDocumentsList) {
-            JobDocumentLocal jobDocumentLocal = new JobDocumentLocal(
-                    jobDocument.getIdJob(),
-                    jobDocument.getIdJobDocument(),
-                    jobDocument.getNameDocument(),
-                    jobDocument.getLinkDocument(),
-                    jobDocument.getIdProject()
-            );
-            dao.insertJobDocument(jobDocumentLocal);
-        }
-        syncDataManager.sysDataJobUser(jobsList);
-    }
-
-    @Override
-    public void getSyncJobUser(List<JobUser> jobUserList) {
-        for (JobUser jobDocument : jobUserList) {
-            JobUserLocal jobDocumentLocal = new JobUserLocal(
-                    jobDocument.getIdJob(),
-                    jobDocument.getIdJobUser(),
-                    jobDocument.getUser().getUid(),
-                    jobDocument.getUser().getUserName(),
-                    jobDocument.getIdProject()
-            );
-            dao.insertJobUser(jobDocumentLocal);
-        }
-        syncDataManager.sysDataPermissionJob(jobsList);
-    }
-
-    @Override
-    public void getSyncPermissionJob(List<PermissionJob> permissionJobList) {
-        for (PermissionJob jobDocument : permissionJobList) {
-            PermissionJobLocal permissionJobLocal = new PermissionJobLocal(
-                    jobDocument.getIdPermission(),
-                    "",
-                    jobDocument.getIdJob(),
-                    jobDocument.getIdProject()
-            );
-            dao.insertPermissionJob(permissionJobLocal);
-        }
     }
 }
