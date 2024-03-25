@@ -197,6 +197,8 @@ public class CreateJobPersonActivity extends AppCompatActivity implements
         storageReferencePdf = FirebaseStorage.getInstance().getReference("pdfs");
         storageReferenceWord = FirebaseStorage.getInstance().getReference("words");
 
+        startTime = Calendar.getInstance().getTimeInMillis();
+        endTime = Calendar.getInstance().getTimeInMillis();
         Calendar calendarNow = Calendar.getInstance();
         int year = calendarNow.get(Calendar.YEAR);
         int month = calendarNow.get(Calendar.MONTH);

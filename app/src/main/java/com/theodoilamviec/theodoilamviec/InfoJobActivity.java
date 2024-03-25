@@ -177,6 +177,8 @@ public class InfoJobActivity extends AppCompatActivity implements FileAttachedAd
             binding.spStatusJob.setSelection(job.getStatusJob());
             highPriority = job.getHighPriority();
             statusJob = job.getStatusJob();
+            timeStartPicker = job.getTimeStartDate();
+            timeEndPicker = job.getTimeEndDate();
             calendar.setTime(new Date(job.getTimeStartDate()));
             int[] timeJob = getTimeJob(calendar);
             String timeStart = timeJob[2] + "/" + timeJob[1] + "/" + timeJob[0];

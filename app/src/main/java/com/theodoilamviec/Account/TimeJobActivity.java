@@ -52,8 +52,11 @@ public class TimeJobActivity extends AppCompatActivity implements TimeJobManager
         binding.viewCalender.setOnDateClickListener(new OnDateClickListener() {
             @Override
             public void onDateClick(View view, DateData date) {
-                calendar.set(date.getYear(), date.getMonth(), date.getDay());
+
+                calendar.set(date.getYear(), date.getMonth() , date.getDay());
                 binding.tvTitle.setVisibility(View.VISIBLE);
+                System.out.println(calendar.getTimeInMillis());
+                System.out.println(dataMap);
                 List<Job> jobList = dataMap.getOrDefault(calendar.getTimeInMillis(), new ArrayList<>());
                 if (jobList != null && jobList.isEmpty()){
                     binding.rcvItemJob.setVisibility(View.GONE);
@@ -78,7 +81,9 @@ public class TimeJobActivity extends AppCompatActivity implements TimeJobManager
 
     @Override
     public void getListJobByTime(HashMap<Long, List<Job>> dataTimJobMap) {
+        System.out.println("dataTimJobMap = " + dataTimJobMap);
         dataMap.putAll(dataTimJobMap);
+        System.out.println(dataMap);
         for (Long it : dataMap.keySet()) {
             calendar.setTime(new Date(it));
             int year = calendar.get(Calendar.YEAR);
