@@ -28,7 +28,7 @@ public class TimeJobActivity extends AppCompatActivity implements TimeJobManager
 
     ActivityTimeJobBinding binding;
     TimeJobManager timeJobManager;
-    HashMap<Long, List<Job> > dataMap = new HashMap<>();
+    HashMap<String, List<Job> > dataMap = new HashMap<>();
     JobAdapter jobAdapter ;
     Calendar calendar = Calendar.getInstance();
     @Override
@@ -52,12 +52,10 @@ public class TimeJobActivity extends AppCompatActivity implements TimeJobManager
         binding.viewCalender.setOnDateClickListener(new OnDateClickListener() {
             @Override
             public void onDateClick(View view, DateData date) {
-
+                System.out.println("date = " + date.getDay() + " - "+ date.getMonth() + " - " + date.getYear() );
                 calendar.set(date.getYear(), date.getMonth() , date.getDay());
                 binding.tvTitle.setVisibility(View.VISIBLE);
-                System.out.println(calendar.getTimeInMillis());
-                System.out.println(dataMap);
-                List<Job> jobList = dataMap.getOrDefault(calendar.getTimeInMillis(), new ArrayList<>());
+                List<Job> jobList = dataMap.getOrDefault(date.getMonth()+"/"+date.getDay()+"/"+date.getYear(), new ArrayList<>());
                 if (jobList != null && jobList.isEmpty()){
                     binding.rcvItemJob.setVisibility(View.GONE);
                     binding.tvError.setVisibility(View.VISIBLE);
@@ -80,12 +78,14 @@ public class TimeJobActivity extends AppCompatActivity implements TimeJobManager
     }
 
     @Override
-    public void getListJobByTime(HashMap<Long, List<Job>> dataTimJobMap) {
-        System.out.println("dataTimJobMap = " + dataTimJobMap);
+    public void getListJobByTime(HashMap<String, List<Job>> dataTimJobMap) {
+//        System.out.println("dataTimJobMap = " + dataTimJobMap);
         dataMap.putAll(dataTimJobMap);
-        System.out.println(dataMap);
-        for (Long it : dataMap.keySet()) {
-            calendar.setTime(new Date(it));
+        for (String it : dataMap.keySet()) {
+
+            String[] dateTime = it.split("/");
+            calendar.set(Integer.parseInt(dateTime[2]),Integer.parseInt(dateTime[0]),Integer.parseInt(dateTime[1]));
+
             int year = calendar.get(Calendar.YEAR);
             int month = calendar.get(Calendar.MONTH);
             int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);

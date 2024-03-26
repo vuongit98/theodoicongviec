@@ -20,7 +20,7 @@ public class TimeJobManager {
     public interface ITimeJob {
         void getIdProjectList(List<String> idProjectList);
 
-        void getListJobByTime(HashMap<Long, List<Job>> dataTimJobMap);
+        void getListJobByTime(HashMap<String, List<Job>> dataTimJobMap);
     }
 
     private ITimeJob iTimeJob;
@@ -38,7 +38,7 @@ public class TimeJobManager {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists() && snapshot.hasChildren()) {
-                    HashMap<Long, List<Job>> dataTimeJobMap = new HashMap<>();
+                    HashMap<String, List<Job>> dataTimeJobMap = new HashMap<>();
                     Calendar calendar = Calendar.getInstance();
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         Job job = dataSnapshot.getValue(Job.class);
@@ -48,12 +48,11 @@ public class TimeJobManager {
                             int year = calendar.get(Calendar.YEAR);
                             int month = calendar.get(Calendar.MONTH);
                             int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-                            calendar.set(year,month,dayOfMonth);
 
-                           List<Job> jobList = dataTimeJobMap.get(calendar.getTimeInMillis());
+                           List<Job> jobList = dataTimeJobMap.get(month+"/"+dayOfMonth+"/"+year);
                            if (jobList == null) jobList = new ArrayList<>();
                            jobList.add(job);
-                           dataTimeJobMap.put(calendar.getTimeInMillis(), jobList);
+                           dataTimeJobMap.put(month+"/"+dayOfMonth+"/"+year, jobList);
                         }
                     }
                     iTimeJob.getListJobByTime(dataTimeJobMap);
